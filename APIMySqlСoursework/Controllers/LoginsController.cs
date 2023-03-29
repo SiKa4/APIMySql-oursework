@@ -16,12 +16,12 @@ namespace APIMySqlСoursework.Controllers
             Db = db;
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetOne(string id)
+        [HttpPost("logPass")]
+        public async Task<IActionResult> GetOne([FromBody] LogPass logPass)
         {
             await Db.Connection.OpenAsync();
             var query = new LoginsQuery(Db);
-            var result = await query.FindOneAsync(id);
+            var result = await query.FindOneAsync(logPass.Login, logPass.Password);
             if (result is null)
                 return new NotFoundResult();
             return new OkObjectResult(result);
