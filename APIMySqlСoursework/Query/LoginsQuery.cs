@@ -13,10 +13,18 @@ namespace APIMySqlСoursework.Query
             Db = db;
         }
 
-        public async Task<Logins> FindOneAsync(string login, string password)
+        public async Task<Logins> FindOneAsyncLoginPassword(string login, string password)
         {
             using var cmd = Db.Connection.CreateCommand();
             cmd.CommandText = $"SELECT * FROM Logins WHERE Login = '{login}' AND Password = '{password}'";
+            var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
+            return result.Count > 0 ? result[0] : null;
+        }
+
+        public async Task<Logins> FindOneAsyncLogin(string login)
+        {
+            using var cmd = Db.Connection.CreateCommand();
+            cmd.CommandText = $"SELECT * FROM Logins WHERE Login = '{login}'";
             var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
             return result.Count > 0 ? result[0] : null;
         }
