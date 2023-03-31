@@ -10,6 +10,7 @@ namespace APIMySqlСoursework.Model
         public int id_User { get; set; }
         public string FullName { get; set; }
         public int Role_id { get; set; }
+        public string Number { get; set; }
 
         internal DBConnection Db { get; set; }
 
@@ -43,7 +44,7 @@ namespace APIMySqlСoursework.Model
         public async Task UpdateAsync()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"UPDATE `Users` SET `FullName` = @FullName, `Role_id` = @Role_id WHERE `id_User` = @id_User;";
+            cmd.CommandText = @"UPDATE `Users` SET `FullName` = @FullName, `Role_id` = @Role_id, `Number` = @Number  WHERE `id_User` = @id_User;";
             BindParams(cmd);
             BindId(cmd);
             await cmd.ExecuteNonQueryAsync();
@@ -72,6 +73,12 @@ namespace APIMySqlСoursework.Model
                 ParameterName = "@Role_id",
                 DbType = DbType.Int32,
                 Value = Role_id,
+            });
+            cmd.Parameters.Add(new MySqlParameter
+            {
+                ParameterName = "@Number",
+                DbType = DbType.String,
+                Value = Number,
             });
         }
 
