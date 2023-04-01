@@ -37,6 +37,14 @@ namespace APIMySqlСoursework.Query
             return result.Count > 0 ? result[0] : null;
         }
 
+        public async Task<Logins> FindOneAsyncUserId(int id)
+        {
+            using var cmd = Db.Connection.CreateCommand();
+            cmd.CommandText = $"SELECT * FROM Logins WHERE User_id = {id}";
+            var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
+            return result.Count > 0 ? result[0] : null;
+        }
+
         public async Task<List<Logins>> FindAllAsync()
         {
             using var cmd = Db.Connection.CreateCommand();

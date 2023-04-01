@@ -38,6 +38,17 @@ namespace APIMySqlСoursework.Controllers
             return new OkObjectResult(result);
         }
 
+        [HttpGet("logId/{id}")]
+        public async Task<IActionResult> GetOneByLogin(int id)
+        {
+            await Db.Connection.OpenAsync();
+            var query = new LoginsQuery(Db);
+            var result = await query.FindOneAsyncUserId(id);
+            if (result is null)
+                return new NotFoundResult();
+            return new OkObjectResult(result);
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {

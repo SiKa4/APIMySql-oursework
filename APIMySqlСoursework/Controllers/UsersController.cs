@@ -57,6 +57,7 @@ namespace APIMySqlСoursework.Controllers
                 return new NotFoundResult();
             result.FullName = body.FullName;
             result.Role_id = body.Role_id;
+            result.Number = body.Number;
             await result.UpdateAsync();
             return new OkObjectResult(result);
         }
