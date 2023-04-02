@@ -34,7 +34,7 @@ namespace APIMySqlСoursework.Query
 
         private async Task<List<Users>> ReadAllAsync(DbDataReader reader)
         {
-            var posts = new List<Users>();
+            var users = new List<Users>();
             using (reader)
             {
                 while (await reader.ReadAsync())
@@ -45,10 +45,10 @@ namespace APIMySqlСoursework.Query
                         FullName = reader.GetString(1),
                         Role_id = reader.GetInt32(2),
                     };
-                    posts.Add(post);
+                    users.Add(post);
                 }
             }
-            return posts;
+            return users;
         }
     }
 }
