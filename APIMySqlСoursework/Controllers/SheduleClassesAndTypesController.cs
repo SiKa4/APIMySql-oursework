@@ -55,7 +55,7 @@ namespace APIMySqlСoursework.Controllers
             var result = await query.FindOneAsync(id);
             if (result is null)
                 return new NotFoundResult();
-            result.id_ScheduleСlass = body.id_ScheduleСlass;
+            result.id_ScheduleClass = body.id_ScheduleClass;
             result.Location = body.Location;
             result.TimeStart = body.TimeStart;
             result.TimeEnd = body.TimeEnd;

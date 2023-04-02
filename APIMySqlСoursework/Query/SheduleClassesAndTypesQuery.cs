@@ -39,7 +39,7 @@ namespace APIMySqlСoursework.Query
                 {
                     var schedule = new SheduleClassesAndTypes(Db)
                     {
-                        id_ScheduleСlass = reader.GetInt32(0),
+                        id_ScheduleClass = reader.GetInt32(0),
                         Location = reader.GetString(1),
                         TimeStart = reader.GetDateTime(2),
                         TimeEnd = reader.GetDateTime(3),

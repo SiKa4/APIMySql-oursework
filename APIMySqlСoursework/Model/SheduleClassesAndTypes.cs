@@ -8,7 +8,7 @@ namespace APIMySqlСoursework.Model
 {
     public class SheduleClassesAndTypes
     {
-        public int id_ScheduleСlass { get; set; }
+        public int id_ScheduleClass { get; set; }
         public string Location { get; set; }
         public DateTime TimeStart { get; set; }
         public DateTime TimeEnd { get; set; }
@@ -38,7 +38,7 @@ namespace APIMySqlСoursework.Model
             VALUES (@Location, @TimeStart, @TimeEnd, @MaxOfPeople, @ScheduleClassType_id, @Teacher_id);";
             BindParams(cmd);
             await cmd.ExecuteNonQueryAsync();
-            id_ScheduleСlass = (int)cmd.LastInsertedId;
+            id_ScheduleClass = (int)cmd.LastInsertedId;
         }
 
         public async Task DeleteAsync()
@@ -63,9 +63,9 @@ namespace APIMySqlСoursework.Model
         {
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@id_ScheduleСlass",
+                ParameterName = "@id_ScheduleClass",
                 DbType = DbType.Int32,
-                Value = id_ScheduleСlass,
+                Value = id_ScheduleClass,
             });
         }
 
