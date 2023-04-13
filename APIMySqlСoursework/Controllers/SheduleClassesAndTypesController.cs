@@ -1,19 +1,23 @@
 ﻿using APIMySqlСoursework.Attributes;
 using APIMySqlСoursework.DBMySql;
+using APIMySqlСoursework.Hubs;
 using APIMySqlСoursework.Model;
 using APIMySqlСoursework.Query;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace APIMySqlСoursework.Controllers
 {
-    [ApiKey]
+    //[ApiKey]
     [Route("api/shedules")]
     public class SheduleClassesAndTypesController : ControllerBase
     {
+        private readonly IHubContext<SignalRHubShedules> _hubContext;
         public DBConnection Db { get; }
-        public SheduleClassesAndTypesController(DBConnection db)
+        public SheduleClassesAndTypesController(DBConnection db, IHubContext<SignalRHubShedules> hubContext)
         {
             Db = db;
+            _hubContext = hubContext;
         }
 
         [HttpGet("{id}")]
@@ -44,6 +48,7 @@ namespace APIMySqlСoursework.Controllers
             await Db.Connection.OpenAsync();
             body.Db = Db;
             await body.InsertAsync();
+            await _hubContext.Clients.All.SendAsync("GetShedules", body);
             return new OkObjectResult(body);
         }
 
@@ -55,7 +60,7 @@ namespace APIMySqlСoursework.Controllers
             var result = await query.FindOneAsync(id);
             if (result is null)
                 return new NotFoundResult();
-            result.id_ScheduleClass = body.id_ScheduleClass;
+            result.id_ScheduleСlass = body.id_ScheduleСlass;
             result.Location = body.Location;
             result.TimeStart = body.TimeStart;
             result.TimeEnd = body.TimeEnd;
@@ -63,6 +68,7 @@ namespace APIMySqlСoursework.Controllers
             result.ScheduleClassType_id = body.ScheduleClassType_id;
             result.Teacher_id = body.Teacher_id;
             await result.UpdateAsync();
+            await _hubContext.Clients.All.SendAsync("GetShedules", result);
             return new OkObjectResult(result);
         }
 

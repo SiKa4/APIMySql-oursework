@@ -16,7 +16,7 @@ namespace APIMySqlСoursework.Query
         public async Task<SheduleClassesAndTypes> FindOneAsync(int id)
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = $"SELECT * FROM ScheduleСlasses s JOIN ScheduleClassesTypes t ON t.id_ScheduleClassType = s.ScheduleClassType_id JOIN Users u ON u.id_User = s.Teacher_id WHERE s.id_ScheduleСlass = 1";
+            cmd.CommandText = $"SELECT * FROM ScheduleСlasses s JOIN ScheduleClassesTypes t ON t.id_ScheduleClassType = s.ScheduleClassType_id JOIN Users u ON u.id_User = s.Teacher_id WHERE s.id_ScheduleСlass = {id}";
             var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
             return result.Count > 0 ? result[0] : null;
         }
@@ -39,7 +39,7 @@ namespace APIMySqlСoursework.Query
                 {
                     var schedule = new SheduleClassesAndTypes(Db)
                     {
-                        id_ScheduleClass = reader.GetInt32(0),
+                        id_ScheduleСlass = reader.GetInt32(0),
                         Location = reader.GetString(1),
                         TimeStart = reader.GetDateTime(2),
                         TimeEnd = reader.GetDateTime(3),

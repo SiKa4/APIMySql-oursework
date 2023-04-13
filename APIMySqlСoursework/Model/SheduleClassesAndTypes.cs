@@ -8,7 +8,7 @@ namespace APIMySqlСoursework.Model
 {
     public class SheduleClassesAndTypes
     {
-        public int id_ScheduleClass { get; set; }
+        public int id_ScheduleСlass { get; set; }
         public string Location { get; set; }
         public DateTime TimeStart { get; set; }
         public DateTime TimeEnd { get; set; }
@@ -38,13 +38,13 @@ namespace APIMySqlСoursework.Model
             VALUES (@Location, @TimeStart, @TimeEnd, @MaxOfPeople, @ScheduleClassType_id, @Teacher_id);";
             BindParams(cmd);
             await cmd.ExecuteNonQueryAsync();
-            id_ScheduleClass = (int)cmd.LastInsertedId;
+            id_ScheduleСlass = (int)cmd.LastInsertedId;
         }
 
         public async Task DeleteAsync()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"DELETE FROM `ScheduleСlasses` WHERE `id_ScheduleСlass` = @id_ScheduleСlass;";
+            cmd.CommandText = @"DELETE FROM ScheduleСlasses WHERE id_ScheduleСlass = @id_ScheduleСlass;";
             BindId(cmd);
             await cmd.ExecuteNonQueryAsync();
         }
@@ -52,8 +52,8 @@ namespace APIMySqlСoursework.Model
         public async Task UpdateAsync()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"UPDATE `ScheduleСlasses` SET `Location` = @Location, `TimeStart` = @TimeStart, `TimeEnd` = @TimeEnd, `MaxOfPeople` = @MaxOfPeople, `ScheduleClassType_id` = @ScheduleClassType_id, `Teacher_id` = @Teacher_id 
-            WHERE `id_ScheduleClass` = @id_ScheduleClass;";
+            cmd.CommandText = @"UPDATE ScheduleСlasses SET `Location` = @Location, `TimeStart` = @TimeStart, `TimeEnd` = @TimeEnd, `MaxOfPeople` = @MaxOfPeople, `ScheduleClassType_id` = @ScheduleClassType_id, `Teacher_id` = @Teacher_id 
+            WHERE id_ScheduleСlass = @id_ScheduleСlass;";
             BindParams(cmd);
             BindId(cmd);
             await cmd.ExecuteNonQueryAsync();
@@ -63,9 +63,9 @@ namespace APIMySqlСoursework.Model
         {
             cmd.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@id_ScheduleClass",
+                ParameterName = "@id_ScheduleСlass",
                 DbType = DbType.Int32,
-                Value = id_ScheduleClass,
+                Value = id_ScheduleСlass,
             });
         }
 
