@@ -8,7 +8,8 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace APIMySqlСoursework.Controllers
 {
-    //[ApiKey]
+    /*http://217.66.25.160:5001/api/shedules/27*/
+    [ApiKey]
     [Route("api/shedules")]
     public class SheduleClassesAndTypesController : ControllerBase
     {
