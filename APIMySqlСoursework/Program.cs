@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 /*builder.Services.AddSwaggerGen();*/
-builder.Services.AddSignalR();
+builder.Services.AddSignalR();  
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddTransient<DBConnection>(_ => new DBConnection(builder.Configuration["ConnectionStrings:DefaultConnection"]));
