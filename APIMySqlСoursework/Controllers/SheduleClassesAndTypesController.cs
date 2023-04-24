@@ -49,6 +49,7 @@ namespace APIMySqlСoursework.Controllers
             await Db.Connection.OpenAsync();
             body.Db = Db;
             await body.InsertAsync();
+            body.isActive = true;
             await _hubContext.Clients.All.SendAsync("GetShedules", body);
             return new OkObjectResult(body);
         }

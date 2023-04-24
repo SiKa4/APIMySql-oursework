@@ -27,7 +27,7 @@ namespace APIMySqlСoursework.Model
         public async Task InsertAsync()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"INSERT INTO `Users` (`FullName`, `Role_id`) VALUES (@FullName, @Role_id);";
+            cmd.CommandText = @"INSERT INTO `Users` (`FullName`, `Role_id`, `Number`) VALUES (@FullName, @Role_id, @Number);";
             BindParams(cmd);
             await cmd.ExecuteNonQueryAsync();
             id_User = (int)cmd.LastInsertedId;

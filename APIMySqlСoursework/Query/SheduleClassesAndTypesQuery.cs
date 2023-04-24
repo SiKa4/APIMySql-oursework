@@ -51,6 +51,7 @@ namespace APIMySqlСoursework.Query
                         Details = reader.GetString(9),
                         Image_Type = reader.GetString(10),
                     };
+                    //dopisatb/
                     sheduleClassesAndTypes.Add(schedule);
                 }
             }

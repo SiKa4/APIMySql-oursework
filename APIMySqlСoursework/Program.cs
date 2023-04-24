@@ -20,9 +20,11 @@ if (app.Environment.IsDevelopment())
 }*/
 app.MapHub<SignalRHubShedules>("/signalRHubShedules");
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 
 app.UseAuthorization();
 
+app.UseStaticFiles();
 app.MapControllers();
 
 app.Run();
