@@ -27,7 +27,7 @@ namespace APIMySqlСoursework.Model
         public async Task InsertAsync()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"INSERT INTO `ScheduleСlasses_Users` (`User_id`, `RecordingTime`, `isActive`) 
+            cmd.CommandText = @"INSERT INTO `ScheduleСlasses_Users` (`ScheduleСlass_id`, `User_id`, `RecordingTime`, `isActive`) 
             VALUES (@User_id, @RecordingTime, @isActive);";
             BindParams(cmd);
             await cmd.ExecuteNonQueryAsync();
@@ -37,8 +37,8 @@ namespace APIMySqlСoursework.Model
         public async Task DeleteAsync()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"DELETE FROM ScheduleСlasses_Users WHERE ScheduleСlass_id = @ScheduleСlass_id;";
-            BindId(cmd);
+            cmd.CommandText = @"DELETE FROM ScheduleСlasses_Users WHERE ScheduleСlass_id = @ScheduleСlass_id AND User_id = @User_id;";
+            BindParams(cmd);
             await cmd.ExecuteNonQueryAsync();
         }
 
@@ -46,13 +46,12 @@ namespace APIMySqlСoursework.Model
         {
             using var cmd = Db.Connection.CreateCommand();
             cmd.CommandText = @"UPDATE ScheduleСlasses_Users SET `isActive` = @isActive
-            WHERE ScheduleСlass_id = @ScheduleСlass_id;";
+            WHERE ScheduleСlass_id = @ScheduleСlass_id AND User_id = @User_id;;";
             BindParams(cmd);
-            BindId(cmd);
             await cmd.ExecuteNonQueryAsync();
         }
 
-        private void BindId(MySqlCommand cmd)
+        private void BindParams(MySqlCommand cmd)
         {
             cmd.Parameters.Add(new MySqlParameter
             {
@@ -60,10 +59,6 @@ namespace APIMySqlСoursework.Model
                 DbType = DbType.Int32,
                 Value = ScheduleСlass_id,
             });
-        }
-
-        private void BindParams(MySqlCommand cmd)
-        {
             cmd.Parameters.Add(new MySqlParameter
             {
                 ParameterName = "@User_id",

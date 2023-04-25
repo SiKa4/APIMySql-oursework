@@ -11,10 +11,10 @@ namespace APIMySqlСoursework.Query
         {
             Db = db;
         }
-        public async Task<ScheduleСlassesUsers> FindOneAsync(int idScheduleСlass)
+        public async Task<ScheduleСlassesUsers> FindOneAsync(int idScheduleСlass, int idUser)
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = $"SELECT * FROM ScheduleСlasses_Users WHERE s.ScheduleСlass_id = {idScheduleСlass}";
+            cmd.CommandText = $"SELECT * FROM ScheduleСlasses_Users WHERE ScheduleСlass_id = {idScheduleСlass} AND User_id = {idUser};";
             var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
             return result.Count > 0 ? result[0] : null;
         }

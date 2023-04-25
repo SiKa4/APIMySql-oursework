@@ -2,7 +2,6 @@
 using MySqlConnector;
 using System.Data;
 using System.Text.Json.Serialization;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace APIMySqlСoursework.Model
 {
@@ -20,6 +19,7 @@ namespace APIMySqlСoursework.Model
         public string Details { get; set; }
         public string Image_Type { get; set; }
         public bool isActive { get; set; }
+        public bool isDelete { get; set; }
         internal DBConnection Db { get; set; }
 
         [JsonConstructor]

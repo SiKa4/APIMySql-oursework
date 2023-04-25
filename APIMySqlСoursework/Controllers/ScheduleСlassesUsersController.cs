@@ -36,12 +36,12 @@ namespace APIMySqlСoursework.Controllers
             return new OkObjectResult(body);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutOne(int id, [FromBody] ScheduleСlassesUsers body)
+        [HttpPut]
+        public async Task<IActionResult> PutOne([FromBody] ScheduleСlassesUsers body)
         {
             await Db.Connection.OpenAsync();
             var query = new ScheduleСlassesUsersQuery(Db);
-            var result = await query.FindOneAsync(id);
+            var result = await query.FindOneAsync(body.ScheduleСlass_id, body.User_id);
             if (result is null)
                 return new NotFoundResult();
             result.isActive = body.isActive;
@@ -49,16 +49,16 @@ namespace APIMySqlСoursework.Controllers
             return new OkObjectResult(result);
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOne(int id)
+        [HttpDelete("{ScheduleСlass_id}/{User_id}")]
+        public async Task<IActionResult> DeleteOne(int ScheduleСlass_id, int User_id)
         {
             await Db.Connection.OpenAsync();
             var query = new ScheduleСlassesUsersQuery(Db);
-            var result = await query.FindOneAsync(id);
+            var result = await query.FindOneAsync(ScheduleСlass_id, User_id);
             if (result is null)
                 return new NotFoundResult();
             await result.DeleteAsync();
-            return new OkResult();
+            return new OkObjectResult(result);
         }
     }
 }

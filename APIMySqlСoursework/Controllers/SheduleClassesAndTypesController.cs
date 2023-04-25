@@ -50,6 +50,7 @@ namespace APIMySqlСoursework.Controllers
             body.Db = Db;
             await body.InsertAsync();
             body.isActive = true;
+            body.isDelete = false;
             await _hubContext.Clients.All.SendAsync("GetShedules", body);
             return new OkObjectResult(body);
         }
@@ -69,6 +70,7 @@ namespace APIMySqlСoursework.Controllers
             result.MaxOfPeople = body.MaxOfPeople;
             result.ScheduleClassType_id = body.ScheduleClassType_id;
             result.Teacher_id = body.Teacher_id;
+            result.isDelete = false;
             await result.UpdateAsync();
             await _hubContext.Clients.All.SendAsync("GetShedules", result);
             return new OkObjectResult(result);
@@ -80,9 +82,11 @@ namespace APIMySqlСoursework.Controllers
             await Db.Connection.OpenAsync();
             var query = new SheduleClassesAndTypesQuery(Db);
             var result = await query.FindOneAsync(id);
+            result.isDelete = true;
             if (result is null)
                 return new NotFoundResult();
             await result.DeleteAsync();
+            await _hubContext.Clients.All.SendAsync("GetShedules", result);
             return new OkResult();
         }
     }

@@ -54,13 +54,14 @@ namespace APIMySqlСoursework.Query
                         Details = reader.GetString(9),
                         Image_Type = reader.GetString(10),
                     };
+                    schedule.isDelete = false;
                     using (var cmd = Db.Connection2.CreateCommand())
                     {
                         cmd.CommandText = $"SELECT COUNT(*) FROM ScheduleСlasses_Users WHERE ScheduleСlass_id = {schedule.id_ScheduleСlass};";
                         var readerUserSchedule = await cmd.ExecuteReaderAsync();
                         while (readerUserSchedule.Read()) count = readerUserSchedule.GetInt32(0);
-                        if (count >= schedule.MaxOfPeople) schedule.isActive = false;
-                        else schedule.isActive = true;
+                        if (count >= schedule.MaxOfPeople || schedule.TimeStart < DateTime.Now) schedule.isActive = false;
+                        else if(count < schedule.MaxOfPeople) schedule.isActive = true;
                         await readerUserSchedule.DisposeAsync();
                     };
                     sheduleClassesAndTypes.Add(schedule);
