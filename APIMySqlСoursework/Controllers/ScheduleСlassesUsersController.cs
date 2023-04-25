@@ -3,6 +3,7 @@ using APIMySqlСoursework.DBMySql;
 using APIMySqlСoursework.Model;
 using APIMySqlСoursework.Query;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace APIMySqlСoursework.Controllers
 {
@@ -32,8 +33,14 @@ namespace APIMySqlСoursework.Controllers
         {
             await Db.Connection.OpenAsync();
             body.Db = Db;
-            await body.InsertAsync();
-            return new OkObjectResult(body);
+            var query = new ScheduleСlassesUsersQuery(Db);
+            var temp = query.FindOneAsync(body.ScheduleСlass_id, body.User_id);
+            if (temp is null)
+            {
+                await body.InsertAsync();
+                return new OkObjectResult(body);
+            }
+            else return BadRequest("Такой пользователь уже записан на это занятие!");
         }
 
         [HttpPut]

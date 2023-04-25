@@ -10,7 +10,6 @@ namespace APIMySqlСoursework.Model
         public int ScheduleСlass_id { get; set; }
         public int User_id { get; set; }
         public DateTime RecordingTime { get; set; }
-
         public bool isActive { get; set; }
         internal DBConnection Db { get; set; }
 
@@ -79,6 +78,36 @@ namespace APIMySqlСoursework.Model
                 DbType = DbType.Boolean,
                 Value = isActive,
             });
+        }
+    }
+
+    public class ScheduleСlassesUsersFullInfo
+    {
+        public int ScheduleСlass_id { get; set; }
+        public int User_id { get; set; }
+        public DateTime RecordingTime { get; set; }
+        public string Location { get; set; }
+        public DateTime TimeStart { get; set; }
+        public DateTime TimeEnd { get; set; }
+        public int MaxOfPeople { get; set; }
+        public int Teacher_id { get; set; }
+        public string Teacher_FullName { get; set; }
+        public string Type_Name { get; set; }
+        public string Details { get; set; }
+        public string Image_Type { get; set; }
+        public bool isActive { get; set; }
+        public bool isDelete { get; set; }
+
+        internal DBConnection Db { get; set; }
+
+        [JsonConstructor]
+        public ScheduleСlassesUsersFullInfo()
+        {
+        }
+
+        internal ScheduleСlassesUsersFullInfo(DBConnection db)
+        {
+            Db = db;
         }
     }
 }
