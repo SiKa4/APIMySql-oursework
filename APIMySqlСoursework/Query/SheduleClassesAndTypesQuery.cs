@@ -67,6 +67,7 @@ namespace APIMySqlСoursework.Query
                     sheduleClassesAndTypes.Add(schedule);
                 }
             }
+            sheduleClassesAndTypes = sheduleClassesAndTypes.OrderBy(x => x.TimeStart).ToList();
             return sheduleClassesAndTypes;
         }
     }

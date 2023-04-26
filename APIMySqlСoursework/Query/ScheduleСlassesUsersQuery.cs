@@ -77,6 +77,7 @@ namespace APIMySqlСoursework.Query
                     scheduleСlassesUsers.Add(scheduleСlasseUser);
                 }
             }
+            scheduleСlassesUsers = scheduleСlassesUsers.OrderBy(x => x.TimeStart).ToList();
             return scheduleСlassesUsers;
         }
     }
