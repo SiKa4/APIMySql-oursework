@@ -95,6 +95,7 @@ namespace APIMySqlСoursework.Model
         public string Type_Name { get; set; }
         public string Details { get; set; }
         public string Image_Type { get; set; }
+        public bool isActiveUser { get; set; }
         public bool isActive { get; set; }
         public bool isDelete { get; set; }
 

@@ -1,6 +1,7 @@
 ﻿using APIMySqlСoursework.DBMySql;
 using APIMySqlСoursework.Model;
 using System.Data.Common;
+using System.Diagnostics.Metrics;
 
 namespace APIMySqlСoursework.Query
 {
@@ -67,8 +68,12 @@ namespace APIMySqlСoursework.Query
                         Type_Name = reader.GetString(9),
                         Details = reader.GetString(10),
                         Image_Type = reader.GetString(11),
-                        isActive = reader.GetBoolean(12)
+                        isActiveUser = reader.GetBoolean(12)
                     };
+                    scheduleСlasseUser.isDelete = false;
+                    if (scheduleСlasseUser.TimeStart <= DateTime.Now) scheduleСlasseUser.isActive = false;
+                    else scheduleСlasseUser.isActive = true;
+
                     scheduleСlassesUsers.Add(scheduleСlasseUser);
                 }
             }

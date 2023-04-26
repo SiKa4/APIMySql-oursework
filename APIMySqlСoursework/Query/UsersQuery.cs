@@ -44,6 +44,7 @@ namespace APIMySqlСoursework.Query
                         id_User = reader.GetInt32(0),
                         FullName = reader.GetString(1),
                         Role_id = reader.GetInt32(2),
+                        Number = reader.GetString(3)
                     };
                     users.Add(post);
                 }
