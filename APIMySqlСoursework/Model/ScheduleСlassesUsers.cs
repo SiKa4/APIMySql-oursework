@@ -27,7 +27,7 @@ namespace APIMySqlСoursework.Model
         {
             using var cmd = Db.Connection.CreateCommand();
             cmd.CommandText = @"INSERT INTO `ScheduleСlasses_Users` (`ScheduleСlass_id`, `User_id`, `RecordingTime`, `isActive`) 
-            VALUES (@User_id, @RecordingTime, @isActive);";
+            VALUES (@ScheduleСlass_id, @User_id, @RecordingTime, @isActive);";
             BindParams(cmd);
             await cmd.ExecuteNonQueryAsync();
             ScheduleСlass_id = (int)cmd.LastInsertedId;

@@ -34,7 +34,7 @@ namespace APIMySqlСoursework.Controllers
             await Db.Connection.OpenAsync();
             body.Db = Db;
             var query = new ScheduleСlassesUsersQuery(Db);
-            var temp = query.FindOneAsync(body.ScheduleСlass_id, body.User_id);
+            ScheduleСlassesUsers temp = await query.FindOneAsync(body.ScheduleСlass_id, body.User_id);
             if (temp is null)
             {
                 await body.InsertAsync();
