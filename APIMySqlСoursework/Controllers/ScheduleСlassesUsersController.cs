@@ -38,7 +38,8 @@ namespace APIMySqlСoursework.Controllers
             if (temp is null)
             {
                 await body.InsertAsync();
-                return new OkObjectResult(body);
+                ScheduleСlassesUsersFullInfo answer = await query.FindAllAsyncIdUserAndIdSchedule(body.User_id, body.ScheduleСlass_id);
+                return new OkObjectResult(answer);
             }
             else return BadRequest("Такой пользователь уже записан на это занятие!");
         }

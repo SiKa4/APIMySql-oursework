@@ -30,7 +30,6 @@ namespace APIMySqlСoursework.Model
             VALUES (@ScheduleСlass_id, @User_id, @RecordingTime, @isActive);";
             BindParams(cmd);
             await cmd.ExecuteNonQueryAsync();
-            ScheduleСlass_id = (int)cmd.LastInsertedId;
         }
 
         public async Task DeleteAsync()

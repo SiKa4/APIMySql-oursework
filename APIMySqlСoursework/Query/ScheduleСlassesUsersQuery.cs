@@ -27,6 +27,15 @@ namespace APIMySqlСoursework.Query
             var result = await ReadAllAsyncFullInfo(await cmd.ExecuteReaderAsync());
             return result.Count > 0 ? result : null;
         }
+
+        public async Task<ScheduleСlassesUsersFullInfo> FindAllAsyncIdUserAndIdSchedule(int idUser, int idSchedule)
+        {
+            using var cmd = Db.Connection.CreateCommand();
+            cmd.CommandText = $"SELECT su.ScheduleСlass_id, su.User_id, su.RecordingTime, s.Location, s.TimeStart, s.TimeEnd, s.MaxOfPeople, s.Teacher_id, u.FullName, st.Name, st.Details, st.Image, su.isActive FROM ScheduleСlasses_Users su JOIN ScheduleСlasses s ON s.id_ScheduleСlass = su.ScheduleСlass_id JOIN ScheduleClassesTypes st ON st.id_ScheduleClassType = s.ScheduleClassType_id JOIN Users u ON u.id_User = s.Teacher_id WHERE su.User_id = {idUser} AND su.ScheduleСlass_id = {idSchedule};";
+            var result = await ReadAllAsyncFullInfo(await cmd.ExecuteReaderAsync());
+            return result[0];
+        }
+
         private async Task<List<ScheduleСlassesUsers>> ReadAllAsync(DbDataReader reader)
         {
             var scheduleСlassesUsers = new List<ScheduleСlassesUsers>();
