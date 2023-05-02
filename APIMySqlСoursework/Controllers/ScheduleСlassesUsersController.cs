@@ -41,11 +41,17 @@ namespace APIMySqlСoursework.Controllers
                 ScheduleСlassesUsersFullInfo answer = await query.FindAllAsyncIdUserAndIdSchedule(body.User_id, body.ScheduleСlass_id);
                 return new OkObjectResult(answer);
             }
-            else return BadRequest("Такой пользователь уже записан на это занятие!");
+            else
+            {
+                temp.isActive = true;
+                await temp.UpdateAsync();
+                ScheduleСlassesUsersFullInfo answer = await query.FindAllAsyncIdUserAndIdSchedule(temp.User_id, temp.ScheduleСlass_id);
+                return new OkObjectResult(answer);
+            }
         }
 
         [HttpPut]
-        public async Task<IActionResult> PutOne([FromBody] ScheduleСlassesUsers body)
+        public async Task<IActionResult> PutOne([FromBody]ScheduleСlassesUsers body)
         {
             await Db.Connection.OpenAsync();
             var query = new ScheduleСlassesUsersQuery(Db);
@@ -54,7 +60,7 @@ namespace APIMySqlСoursework.Controllers
                 return new NotFoundResult();
             result.isActive = body.isActive;
             await result.UpdateAsync();
-            return new OkObjectResult(result);
+            return new OkObjectResult(await query.FindAllAsyncIdUserAndIdSchedule(result.User_id, result.ScheduleСlass_id));
         }
 
         [HttpDelete("{ScheduleСlass_id}/{User_id}")]

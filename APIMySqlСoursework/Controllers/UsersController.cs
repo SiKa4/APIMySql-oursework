@@ -38,6 +38,12 @@ namespace APIMySqlСoursework.Controllers
             return new OkObjectResult(result);
         }
 
+        //[HttpGet("/getTrainer")]
+        //public async Task<IActionResult> GetAllTrainer()
+        //{
+
+        //}
+        //влкючи постман
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Users body)
         {

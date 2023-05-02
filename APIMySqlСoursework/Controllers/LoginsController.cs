@@ -19,6 +19,7 @@ namespace APIMySqlСoursework.Controllers
         [HttpPost("logPass")]
         public async Task<IActionResult> GetOneByLoginPassword([FromBody]LogPass logPass)
         {
+            HttpContext.Session.SetString("Login", logPass.Login);           
             await Db.Connection.OpenAsync();
             var query = new LoginsQuery(Db);
             var result = await query.FindOneAsyncLoginPassword(logPass.Login, logPass.Password);
