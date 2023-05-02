@@ -31,7 +31,7 @@ namespace APIMySqlСoursework.Controllers
         }
 
         [HttpGet("teacherId/{id}")]
-        public async Task<IActionResult> GetOneUserId(int id)
+        public async Task<IActionResult> GetOneTeacherId(int id)
         {
             await Db.Connection.OpenAsync();
             var query = new IndividualScheduleСlassesQuery(Db);
@@ -42,7 +42,7 @@ namespace APIMySqlСoursework.Controllers
         }
 
         [HttpGet("userId/{id}")]
-        public async Task<IActionResult> GetOneTeacherId(int id)
+        public async Task<IActionResult> GetOneUserId(int id)
         {
             await Db.Connection.OpenAsync();
             var query = new IndividualScheduleСlassesQuery(Db);

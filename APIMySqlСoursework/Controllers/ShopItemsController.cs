@@ -7,43 +7,21 @@ using Microsoft.AspNetCore.Mvc;
 namespace APIMySqlСoursework.Controllers
 {
     [ApiKey]
-    [Route("api/logins")]
-    public class LoginsController : ControllerBase
+    [Route("api/shopItem")]
+    public class ShopItemsController : Controller
     {
         public DBConnection Db { get; }
-        public LoginsController(DBConnection db)
+        public ShopItemsController(DBConnection db)
         {
             Db = db;
         }
 
-        [HttpPost("logPass")]
-        public async Task<IActionResult> GetOneByLoginPassword([FromBody]LogPass logPass)
-        {     
-            await Db.Connection.OpenAsync();
-            var query = new LoginsQuery(Db);
-            var result = await query.FindOneAsyncLoginPassword(logPass.Login, logPass.Password);
-            if (result is null)
-                return new NotFoundResult();
-            return new OkObjectResult(result);
-        }
-
-        [HttpGet("{login}")]
-        public async Task<IActionResult> GetOneByLogin(string login)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetOne(int id)
         {
             await Db.Connection.OpenAsync();
-            var query = new LoginsQuery(Db);
-            var result = await query.FindOneAsyncLogin(login);
-            if (result is null)
-                return new NotFoundResult();
-            return new OkObjectResult(result);
-        }
-
-        [HttpGet("logId/{id}")]
-        public async Task<IActionResult> GetOneByLogin(int id)
-        {
-            await Db.Connection.OpenAsync();
-            var query = new LoginsQuery(Db);
-            var result = await query.FindOneAsyncUserId(id);
+            var query = new ShopItemQuery(Db);
+            var result = await query.FindOneAsync(id);
             if (result is null)
                 return new NotFoundResult();
             return new OkObjectResult(result);
@@ -53,7 +31,7 @@ namespace APIMySqlСoursework.Controllers
         public async Task<IActionResult> GetAll()
         {
             await Db.Connection.OpenAsync();
-            var query = new LoginsQuery(Db);
+            var query = new ShopItemQuery(Db);
             var result = await query.FindAllAsync();
             if (result is null)
                 return new NotFoundResult();
@@ -61,7 +39,7 @@ namespace APIMySqlСoursework.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] Logins body)
+        public async Task<IActionResult> Post([FromBody] ShopItems body)
         {
             await Db.Connection.OpenAsync();
             body.Db = Db;
@@ -70,16 +48,17 @@ namespace APIMySqlСoursework.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutOne(int id, [FromBody] Logins body)
+        public async Task<IActionResult> PutOne(int id, [FromBody] ShopItems body)
         {
             await Db.Connection.OpenAsync();
-            var query = new LoginsQuery(Db);
+            var query = new ShopItemQuery(Db);
             var result = await query.FindOneAsync(id);
             if (result is null)
                 return new NotFoundResult();
-            result.Login = body.Login;
-            result.Password = body.Password;
-            result.User_id = body.User_id;
+            result.ShopItemName = body.ShopItemName;
+            result.Description = body.Description;
+            result.Price = body.Price;
+            result.ItemCount = body.ItemCount;
             await result.UpdateAsync();
             return new OkObjectResult(result);
         }
@@ -88,12 +67,12 @@ namespace APIMySqlСoursework.Controllers
         public async Task<IActionResult> DeleteOne(int id)
         {
             await Db.Connection.OpenAsync();
-            var query = new LoginsQuery(Db);
+            var query = new ShopItemQuery(Db);
             var result = await query.FindOneAsync(id);
             if (result is null)
                 return new NotFoundResult();
             await result.DeleteAsync();
-            return new OkResult();
+            return new OkObjectResult(result);
         }
     }
 }
