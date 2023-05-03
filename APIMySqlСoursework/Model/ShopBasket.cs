@@ -93,8 +93,9 @@ namespace APIMySqlСoursework.Model
         public double Item_Price { get; set; }
         public int Item_Count { get; set; }
         public string User_Name { get; set; }
-        public double FullPriceThisPosotion { get; set; }
+        public double FullPriceThisPosition { get; set; }
         public int ItemCount { get; set; }
+        public string Image_URL { get; set; }
         internal DBConnection Db { get; set; }
 
         [JsonConstructor]

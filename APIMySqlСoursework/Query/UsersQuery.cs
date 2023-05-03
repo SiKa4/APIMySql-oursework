@@ -1,5 +1,6 @@
 ﻿using APIMySqlСoursework.DBMySql;
 using APIMySqlСoursework.Model;
+using Microsoft.AspNet.SignalR.Hubs;
 using MySqlConnector;
 using System.Data;
 using System.Data.Common;
@@ -22,7 +23,13 @@ namespace APIMySqlСoursework.Query
             var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
             return result.Count > 0 ? result[0] : null;
         }
-
+        public async Task<List<Coach>> FindAllCoachAsync()
+        {
+            using var cmd = Db.Connection.CreateCommand();
+            cmd.CommandText = $"SELECT * FROM Users u JOIN CoachInfo c ON u.id_User = c.User_id JOIN Logins l ON l.User_id = u.id_User WHERE Role_id = 2";
+            var result = await ReadAllCoachAsync(await cmd.ExecuteReaderAsync());
+            return result.Count > 0 ? result : null;
+        }
 
         public async Task<List<Users>> FindAllAsync()
         {
@@ -30,6 +37,29 @@ namespace APIMySqlСoursework.Query
             cmd.CommandText = $"SELECT * FROM Users";
             var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
             return result.Count > 0 ? result : null;
+        }
+
+        private async Task<List<Coach>> ReadAllCoachAsync(DbDataReader reader)
+        {
+            var users = new List<Coach>();
+            using (reader)
+            {
+                while (await reader.ReadAsync())
+                {
+                    var post = new Coach()
+                    {
+                        id_User = reader.GetInt32(0),
+                        FullName = reader.GetString(1),
+                        Role_id = reader.GetInt32(2),
+                        Number = reader.GetString(3),
+                        Description = reader.GetString(5),
+                        Image_URL = reader.GetString(6),
+                        Email = reader.GetString(9),
+                    };
+                    users.Add(post);
+                }
+            }
+            return users;
         }
 
         private async Task<List<Users>> ReadAllAsync(DbDataReader reader)
@@ -44,7 +74,8 @@ namespace APIMySqlСoursework.Query
                         id_User = reader.GetInt32(0),
                         FullName = reader.GetString(1),
                         Role_id = reader.GetInt32(2),
-                        Number = reader.GetString(3)
+                        Number = reader.GetString(3),
+                        
                     };
                     users.Add(post);
                 }

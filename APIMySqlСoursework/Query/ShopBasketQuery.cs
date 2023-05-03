@@ -56,7 +56,7 @@ namespace APIMySqlСoursework.Query
         public async Task<ShopBasketFullInfo> FindAllFullInfoByIdShopBusketAsync(int id)
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = $"Select sh.id_ShopBasket, si.id_ShopItem, us.id_User, si.ShopItemName, si.Description, si.Price, si.ItemCount, us.FullName From ShopBasket sh Join ShopItems si on sh.ShopItem_id = si.id_ShopItem Join Users us on sh.User_id = us.id_User WHERE id_ShopBasket = {id} AND sh.Order_id IS NULL;";
+            cmd.CommandText = $"Select sh.id_ShopBasket, si.id_ShopItem, us.id_User, si.ShopItemName, si.Description, si.Price, si.ItemCount, us.FullName, si.Image_URL From ShopBasket sh Join ShopItems si on sh.ShopItem_id = si.id_ShopItem Join Users us on sh.User_id = us.id_User WHERE id_ShopBasket = {id} AND sh.Order_id IS NULL;";
             var result = await ReadAllAsyncFullInfo(await cmd.ExecuteReaderAsync());
             return result.Count > 0 ? result[0] : null;
         }
@@ -65,7 +65,7 @@ namespace APIMySqlСoursework.Query
         public async Task<ShopBasketFullInfo> FindAllFullInfoShopBusketAsync(int id)
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = $"Select sh.id_ShopBasket, si.id_ShopItem, us.id_User, si.ShopItemName, si.Description, si.Price, si.ItemCount, us.FullName From ShopBasket sh Join ShopItems si on sh.ShopItem_id = si.id_ShopItem Join Users us on sh.User_id = us.id_User AND sh.Order_id IS NULL;";
+            cmd.CommandText = $"Select sh.id_ShopBasket, si.id_ShopItem, us.id_User, si.ShopItemName, si.Description, si.Price, si.ItemCount, us.FullName, si.Image_URL From ShopBasket sh Join ShopItems si on sh.ShopItem_id = si.id_ShopItem Join Users us on sh.User_id = us.id_User AND sh.Order_id IS NULL;";
             var result = await ReadAllAsyncFullInfo(await cmd.ExecuteReaderAsync());
             return result.Count > 0 ? result[0] : null;
         }
@@ -73,7 +73,7 @@ namespace APIMySqlСoursework.Query
         public async Task<List<ShopBasketFullInfo>> FindAllFullInfoByUserIdShopBusketAsync(int id)
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = $"Select sh.id_ShopBasket, si.id_ShopItem, us.id_User, si.ShopItemName, si.Description, si.Price, si.ItemCount, us.FullName, sh.ShopItemCount From ShopBasket sh Join ShopItems si on sh.ShopItem_id = si.id_ShopItem Join Users us on sh.User_id = us.id_User WHERE sh.User_id = {id} AND sh.Order_id IS NULL;";
+            cmd.CommandText = $"Select sh.id_ShopBasket, si.id_ShopItem, us.id_User, si.ShopItemName, si.Description, si.Price, si.ItemCount, us.FullName, sh.ShopItemCount, si.Image_URL From ShopBasket sh Join ShopItems si on sh.ShopItem_id = si.id_ShopItem Join Users us on sh.User_id = us.id_User WHERE sh.User_id = {id} AND sh.Order_id IS NULL;";
             var result = await ReadAllAsyncFullInfo(await cmd.ExecuteReaderAsync());
             return result.Count > 0 ? result : null;
         }
@@ -117,8 +117,9 @@ namespace APIMySqlСoursework.Query
                         Item_Count = reader.GetInt32(6),
                         User_Name = reader.GetString(7),
                         ItemCount = reader.GetInt32(8),
+                        Image_URL = reader.GetString(9),
                     };
-                    shopBasket.FullPriceThisPosotion = (double)(shopBasket.Item_Count * shopBasket.Item_Price);
+                    shopBasket.FullPriceThisPosition = (double)(shopBasket.Item_Count * shopBasket.Item_Price);
                     shopBaskets.Add(shopBasket);
                 }
             }

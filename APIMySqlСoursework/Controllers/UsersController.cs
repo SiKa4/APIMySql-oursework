@@ -38,6 +38,17 @@ namespace APIMySqlСoursework.Controllers
             return new OkObjectResult(result);
         }
 
+        [HttpGet("coach")]
+        public async Task<IActionResult> GetAllCoach()
+        {
+            await Db.Connection.OpenAsync();
+            var query = new UsersQuery(Db);
+            var result = await query.FindAllCoachAsync();
+            if (result is null)
+                return new NotFoundResult();
+            return new OkObjectResult(result);
+        }
+
         //[HttpGet("/getTrainer")]
         //public async Task<IActionResult> GetAllTrainer()
         //{

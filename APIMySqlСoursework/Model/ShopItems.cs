@@ -14,6 +14,7 @@ namespace APIMySqlСoursework.Model
         public string Description { get; set; }
         public double Price { get; set; }
         public int ItemCount { get; set; }
+        public string Image_URL { get; set; }
         internal DBConnection Db { get; set; }
 
         [JsonConstructor]
@@ -46,7 +47,7 @@ namespace APIMySqlСoursework.Model
         public async Task UpdateAsync()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"UPDATE `ShopItems` SET `ShopItemName` = @ShopItemName, `Description` = @Description, `Price` = @Price, `ItemCount` = @ItemCount  WHERE `id_ShopItem` = @id_ShopItem;";
+            cmd.CommandText = @"UPDATE `ShopItems` SET `ShopItemName` = @ShopItemName, `Description` = @Description, `Price` = @Price, `ItemCount` = @ItemCount, `Image_URL` = @Image_URL  WHERE `id_ShopItem` = @id_ShopItem;";
             BindParams(cmd);
             BindId(cmd);
             await cmd.ExecuteNonQueryAsync();
@@ -87,6 +88,12 @@ namespace APIMySqlСoursework.Model
                 ParameterName = "@ItemCount",
                 DbType = DbType.Int32,
                 Value = ItemCount,
+            });
+            cmd.Parameters.Add(new MySqlParameter
+            {
+                ParameterName = "@Image_URL",
+                DbType = DbType.String,
+                Value = Image_URL,
             });
         }
     }

@@ -15,7 +15,7 @@ namespace APIMySqlСoursework.Model
         internal DBConnection Db { get; set; }
 
         [JsonConstructor]
-        public Users() 
+        public Users()
         {
         }
 
@@ -31,7 +31,7 @@ namespace APIMySqlСoursework.Model
             BindParams(cmd);
             await cmd.ExecuteNonQueryAsync();
             id_User = (int)cmd.LastInsertedId;
-        } 
+        }
 
         public async Task DeleteAsync()
         {
@@ -83,5 +83,16 @@ namespace APIMySqlСoursework.Model
         }
 
 
+    }
+
+    public class Coach
+    {
+        public int id_User { get; set; }
+        public string FullName { get; set; }
+        public int Role_id { get; set; }
+        public string Number { get; set; }
+        public string Description { get; set; }
+        public string Image_URL { get; set; }
+        public string Email { get; set; }
     }
 }

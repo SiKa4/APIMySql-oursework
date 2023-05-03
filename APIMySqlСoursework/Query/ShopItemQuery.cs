@@ -43,6 +43,7 @@ namespace APIMySqlСoursework.Query
                         Description = reader.GetString(2),
                         Price = reader.GetDouble(3),
                         ItemCount = reader.GetInt32(4),
+                        Image_URL = reader.GetString(5)
                     };
                     users.Add(post);
                 }
