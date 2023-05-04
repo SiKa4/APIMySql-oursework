@@ -26,7 +26,7 @@ namespace APIMySqlСoursework.Controllers
         {
             await Db.Connection.OpenAsync();
             var query = new SheduleClassesAndTypesQuery(Db);
-            var result = await query.FindOneAsync(id);
+            var result = await query.FindOneFullInfoAsync(id);
             if (result is null)
                 return new NotFoundResult();
             return new OkObjectResult(result);
@@ -37,7 +37,7 @@ namespace APIMySqlСoursework.Controllers
         {
             await Db.Connection.OpenAsync();
             var query = new SheduleClassesAndTypesQuery(Db);
-            var result = await query.FindAllAsync();
+            var result = await query.FindAllFullInfoAsync();
             if (result is null)
                 return new NotFoundResult();
             return new OkObjectResult(result);
@@ -48,11 +48,12 @@ namespace APIMySqlСoursework.Controllers
         {
             await Db.Connection.OpenAsync();
             body.Db = Db;
-            await body.InsertAsync();
-            body.isActive = true;
+            var query = new SheduleClassesAndTypesQuery(Db);
             body.isDelete = false;
-            await _hubContext.Clients.All.SendAsync("GetShedules", body);
-            return new OkObjectResult(body);
+            await body.InsertAsync();
+            var answer = await query.FindOneFullInfoAsync(body.id_ScheduleСlass);
+            await _hubContext.Clients.All.SendAsync("GetShedules", answer);
+            return new OkObjectResult(answer);
         }
 
         [HttpPut("{id}")]
@@ -61,9 +62,9 @@ namespace APIMySqlСoursework.Controllers
             await Db.Connection.OpenAsync();
             var query = new SheduleClassesAndTypesQuery(Db);
             var result = await query.FindOneAsync(id);
-            if (result is null)
+            if (result is null  || result.id_ScheduleСlass != body.id_ScheduleСlass)
                 return new NotFoundResult();
-            result.id_ScheduleСlass = body.id_ScheduleСlass;
+            result.id_ScheduleСlass = id;
             result.Location = body.Location;
             result.TimeStart = body.TimeStart;
             result.TimeEnd = body.TimeEnd;
@@ -72,8 +73,9 @@ namespace APIMySqlСoursework.Controllers
             result.Teacher_id = body.Teacher_id;
             result.isDelete = false;
             await result.UpdateAsync();
-            await _hubContext.Clients.All.SendAsync("GetShedules", result);
-            return new OkObjectResult(result);
+            var answer = await query.FindOneFullInfoAsync(result.id_ScheduleСlass);
+            await _hubContext.Clients.All.SendAsync("GetShedules", answer);
+            return new OkObjectResult(answer);
         }
 
         [HttpDelete("{id}")]

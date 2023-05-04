@@ -16,19 +16,40 @@ namespace APIMySqlСoursework.Query
         public async Task<SheduleClassesAndTypes> FindOneAsync(int id)
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = $"SELECT * FROM ScheduleСlasses s JOIN ScheduleClassesTypes t ON t.id_ScheduleClassType = s.ScheduleClassType_id JOIN Users u ON u.id_User = s.Teacher_id WHERE s.id_ScheduleСlass = {id}";
+            cmd.CommandText = $"SELECT * FROM ScheduleСlasses s WHERE s.id_ScheduleСlass = {id}";
             await Db.Connection2.OpenAsync();
             var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
+            await Db.Connection2.CloseAsync();
             return result.Count > 0 ? result[0] : null;
         }
-
 
         public async Task<List<SheduleClassesAndTypes>> FindAllAsync()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = $"SELECT * FROM ScheduleСlasses s JOIN ScheduleClassesTypes t ON t.id_ScheduleClassType = s.ScheduleClassType_id JOIN Users u ON u.id_User = s.Teacher_id";
+            cmd.CommandText = $"SELECT * FROM ScheduleСlasses;";
             await Db.Connection2.OpenAsync();
             var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
+            await Db.Connection2.CloseAsync();
+            return result.Count > 0 ? result : null;
+        }
+
+        public async Task<SheduleClassesAndTypesFullInfo> FindOneFullInfoAsync(int id)
+        {
+            using var cmd = Db.Connection.CreateCommand();
+            cmd.CommandText = $"SELECT * FROM ScheduleСlasses s JOIN ScheduleClassesTypes t ON t.id_ScheduleClassType = s.ScheduleClassType_id JOIN Users u ON u.id_User = s.Teacher_id WHERE s.id_ScheduleСlass = {id}";
+            await Db.Connection2.OpenAsync();
+            var result = await ReadAllFullInfoAsync(await cmd.ExecuteReaderAsync());
+            await Db.Connection2.CloseAsync();
+            return result.Count > 0 ? result[0] : null;
+        }
+
+        public async Task<List<SheduleClassesAndTypesFullInfo>> FindAllFullInfoAsync()
+        {
+            using var cmd = Db.Connection.CreateCommand();
+            cmd.CommandText = $"SELECT * FROM ScheduleСlasses s JOIN ScheduleClassesTypes t ON t.id_ScheduleClassType = s.ScheduleClassType_id JOIN Users u ON u.id_User = s.Teacher_id";
+            await Db.Connection2.OpenAsync();
+            var result = await ReadAllFullInfoAsync(await cmd.ExecuteReaderAsync());
+            await Db.Connection2.CloseAsync();
             return result.Count > 0 ? result : null;
         }
 
@@ -41,6 +62,31 @@ namespace APIMySqlСoursework.Query
                 while (await reader.ReadAsync())
                 {
                     var schedule = new SheduleClassesAndTypes(Db)
+                    {
+                        id_ScheduleСlass = reader.GetInt32(0),
+                        Location = reader.GetString(1),
+                        TimeStart = reader.GetDateTime(2),
+                        TimeEnd = reader.GetDateTime(3),
+                        MaxOfPeople = reader.GetInt32(4),
+                        ScheduleClassType_id = reader.GetInt32(5),
+                        Teacher_id = reader.GetInt32(6),
+                    };
+                    sheduleClassesAndTypes.Add(schedule);
+                }
+            }
+            sheduleClassesAndTypes = sheduleClassesAndTypes.OrderBy(x => x.TimeStart).ToList();
+            return sheduleClassesAndTypes;
+        }
+
+        private async Task<List<SheduleClassesAndTypesFullInfo>> ReadAllFullInfoAsync(DbDataReader reader)
+        {
+            var sheduleClassesAndTypes = new List<SheduleClassesAndTypesFullInfo>();
+            int count = 0;
+            using (reader)
+            {
+                while (await reader.ReadAsync())
+                {
+                    var schedule = new SheduleClassesAndTypesFullInfo(Db)
                     {
                         id_ScheduleСlass = reader.GetInt32(0),
                         Location = reader.GetString(1),

@@ -14,17 +14,13 @@ namespace APIMySqlСoursework.Model
         public int MaxOfPeople { get; set; }
         public int ScheduleClassType_id { get; set; }
         public int Teacher_id { get; set; }
-        public string Teacher_FullName { get; set; }
-        public string Type_Name { get; set; }
-        public string Details { get; set; }
-        public string Image_Type { get; set; }
-        public bool isActive { get; set; }
         public bool isDelete { get; set; }
         internal DBConnection Db { get; set; }
 
         [JsonConstructor]
         public SheduleClassesAndTypes()
         {
+
         }
 
         internal SheduleClassesAndTypes(DBConnection db)
@@ -108,30 +104,33 @@ namespace APIMySqlСoursework.Model
                 DbType = DbType.Int32,
                 Value = Teacher_id,
             });
-            cmd.Parameters.Add(new MySqlParameter
-            {
-                ParameterName = "@Teacher_FullName",
-                DbType = DbType.String,
-                Value = Teacher_FullName,
-            });
-            cmd.Parameters.Add(new MySqlParameter
-            {
-                ParameterName = "@Details",
-                DbType = DbType.String,
-                Value = Details,
-            });
-            cmd.Parameters.Add(new MySqlParameter
-            {
-                ParameterName = "@Image_Type",
-                DbType = DbType.String,
-                Value = Image_Type,
-            });
-            cmd.Parameters.Add(new MySqlParameter
-            {
-                ParameterName = "@Type_Name",
-                DbType = DbType.String,
-                Value = Type_Name,
-            });
+        }
+    }
+    public class SheduleClassesAndTypesFullInfo
+    {
+        public int id_ScheduleСlass { get; set; }
+        public string Location { get; set; }
+        public DateTime TimeStart { get; set; }
+        public DateTime TimeEnd { get; set; }
+        public int MaxOfPeople { get; set; }
+        public int ScheduleClassType_id { get; set; }
+        public int Teacher_id { get; set; }
+        public string Teacher_FullName { get; set; }
+        public string Type_Name { get; set; }
+        public string Details { get; set; }
+        public string Image_Type { get; set; }
+        public bool isActive { get; set; }
+        public bool isDelete { get; set; }
+        internal DBConnection Db { get; set; }
+
+        [JsonConstructor]
+        public SheduleClassesAndTypesFullInfo()
+        {
+        }
+
+        internal SheduleClassesAndTypesFullInfo(DBConnection db)
+        {
+            Db = db;
         }
     }
 }
