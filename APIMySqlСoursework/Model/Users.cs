@@ -11,7 +11,7 @@ namespace APIMySqlСoursework.Model
         public string FullName { get; set; }
         public int Role_id { get; set; }
         public string Number { get; set; }
-
+        public string Role_Name { get; set; }
         internal DBConnection Db { get; set; }
 
         [JsonConstructor]
@@ -94,5 +94,6 @@ namespace APIMySqlСoursework.Model
         public string Description { get; set; }
         public string Image_URL { get; set; }
         public string Email { get; set; }
+
     }
 }

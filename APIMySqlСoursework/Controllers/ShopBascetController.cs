@@ -28,7 +28,7 @@ namespace APIMySqlСoursework.Controllers
         }
 
         [HttpGet("userId/{id}")]
-        public async Task<IActionResult> GetOneUserId(int id)
+        public async Task<IActionResult> GetAllUserId(int id)
         {
             await Db.Connection.OpenAsync();
             var query = new ShopBasketQuery(Db);

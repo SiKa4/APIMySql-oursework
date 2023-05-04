@@ -19,14 +19,14 @@ namespace APIMySqlСoursework.Query
         public async Task<Users> FindOneAsync(int id)
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = $"SELECT * FROM Users WHERE id_User = {id}";
+            cmd.CommandText = $"SELECT * FROM Users u JOIN Roles r ON u.Role_id = r.id_Role WHERE id_User = {id}";
             var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
             return result.Count > 0 ? result[0] : null;
         }
         public async Task<List<Coach>> FindAllCoachAsync()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = $"SELECT * FROM Users u JOIN CoachInfo c ON u.id_User = c.User_id JOIN Logins l ON l.User_id = u.id_User WHERE Role_id = 2";
+            cmd.CommandText = $"SELECT * FROM Users u JOIN CoachInfo c ON u.id_User = c.User_id JOIN Logins l ON l.User_id = u.id_User JOIN Roles r ON u.Role_id = r.id_Role WHERE Role_id = 2;";
             var result = await ReadAllCoachAsync(await cmd.ExecuteReaderAsync());
             return result.Count > 0 ? result : null;
         }
@@ -34,7 +34,7 @@ namespace APIMySqlСoursework.Query
         public async Task<List<Users>> FindAllAsync()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = $"SELECT * FROM Users";
+            cmd.CommandText = $"SELECT * FROM Users u JOIN Roles r ON u.Role_id = r.id_Role";
             var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
             return result.Count > 0 ? result : null;
         }
@@ -62,6 +62,8 @@ namespace APIMySqlСoursework.Query
             return users;
         }
 
+        //созздать метод подсчета 
+
         private async Task<List<Users>> ReadAllAsync(DbDataReader reader)
         {
             var users = new List<Users>();
@@ -75,7 +77,7 @@ namespace APIMySqlСoursework.Query
                         FullName = reader.GetString(1),
                         Role_id = reader.GetInt32(2),
                         Number = reader.GetString(3),
-                        
+                        Role_Name = reader.GetString(5),
                     };
                     users.Add(post);
                 }

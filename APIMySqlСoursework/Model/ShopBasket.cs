@@ -6,12 +6,19 @@ using System.Text.Json.Serialization;
 
 namespace APIMySqlСoursework.Model
 {
+    //public class ShopBasketMini
+    //{
+    //    public int id_ShopBasket { get; set; }
+    //    public int Order_id { get; set; }
+    //}
+
     public class ShopBasket
     {
         public int id_ShopBasket { get; set; }
         public int ShopItem_id { get; set; }
         public int User_id { get; set; }
         public int ShopItemCount{ get; set; }
+       
         internal DBConnection Db { get; set; }
 
         [JsonConstructor]
@@ -50,6 +57,7 @@ namespace APIMySqlСoursework.Model
             await cmd.ExecuteNonQueryAsync();
         }
 
+
         private void BindId(MySqlCommand cmd)
         {
             cmd.Parameters.Add(new MySqlParameter
@@ -85,7 +93,7 @@ namespace APIMySqlСoursework.Model
 
     public class ShopBasketFullInfo
     {
-        public int id_ShopBusket { get; set; }
+        public int id_ShopBasket { get; set; }
         public int Item_id { get; set; }
         public int User_id { get; set; }
         public string Item_Name { get; set; }
@@ -94,8 +102,9 @@ namespace APIMySqlСoursework.Model
         public int Item_Count { get; set; }
         public string User_Name { get; set; }
         public double FullPriceThisPosition { get; set; }
-        public int ItemCount { get; set; }
+        public int ShopItemCount { get; set; }
         public string Image_URL { get; set; }
+        public int Order_id { get; set; }
         internal DBConnection Db { get; set; }
 
         [JsonConstructor]
@@ -106,6 +115,13 @@ namespace APIMySqlСoursework.Model
         internal ShopBasketFullInfo(DBConnection db)
         {
             Db = db;
+        }
+
+        public async Task UpdateOrderIdAsync()
+        {
+            using var cmd = Db.Connection.CreateCommand();
+            cmd.CommandText = $"UPDATE `ShopBasket` SET `Order_id` = {Order_id} WHERE `id_ShopBasket` = {id_ShopBasket};";
+            await cmd.ExecuteNonQueryAsync();
         }
     }
 }

@@ -108,7 +108,7 @@ namespace APIMySqlСoursework.Query
                 {
                     var shopBasket = new ShopBasketFullInfo(Db)
                     {
-                        id_ShopBusket = reader.GetInt32(0),
+                        id_ShopBasket = reader.GetInt32(0),
                         Item_id = reader.GetInt32(1),
                         User_id = reader.GetInt32(2),
                         Item_Name = reader.GetString(3),
@@ -116,7 +116,7 @@ namespace APIMySqlСoursework.Query
                         Item_Price = reader.GetDouble(5),
                         Item_Count = reader.GetInt32(6),
                         User_Name = reader.GetString(7),
-                        ItemCount = reader.GetInt32(8),
+                        ShopItemCount = reader.GetInt32(8),
                         Image_URL = reader.GetString(9),
                     };
                     shopBasket.FullPriceThisPosition = (double)(shopBasket.Item_Count * shopBasket.Item_Price);
