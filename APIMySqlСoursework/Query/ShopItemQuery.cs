@@ -29,6 +29,13 @@ namespace APIMySqlСoursework.Query
             return result.Count > 0 ? result : null;
         }
 
+        public async Task ChangeItemCountAsync(int id, int newItemCount)
+        {
+            var item = await FindOneAsync(id);
+            item.ItemCount = newItemCount;
+            await item.UpdateAsync();
+        }
+
         private async Task<List<ShopItems>> ReadAllAsync(DbDataReader reader)
         {
             var users = new List<ShopItems>();
@@ -47,6 +54,7 @@ namespace APIMySqlСoursework.Query
                     };
                     users.Add(post);
                 }
+
             }
             return users;
         }

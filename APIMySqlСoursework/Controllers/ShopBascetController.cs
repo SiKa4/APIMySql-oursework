@@ -16,16 +16,16 @@ namespace APIMySqlСoursework.Controllers
             Db = db;
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetOneByIdShopBasket(int id)
-        {
-            await Db.Connection.OpenAsync();
-            var query = new ShopBasketQuery(Db);
-            var result = await query.FindOneAsync(id);
-            if (result is null)
-                return new NotFoundResult();
-            return new OkObjectResult(result);
-        }
+        //[HttpGet("{id}")]
+        //public async Task<IActionResult> GetOneByIdShopBasket(int id)
+        //{
+        //    await Db.Connection.OpenAsync();
+        //    var query = new ShopBasketQuery(Db);
+        //    var result = await query.FindOneAsync(id);
+        //    if (result is null)
+        //        return new NotFoundResult();
+        //    return new OkObjectResult(result);
+        //}
 
         [HttpGet("userId/{id}")]
         public async Task<IActionResult> GetAllUserId(int id)

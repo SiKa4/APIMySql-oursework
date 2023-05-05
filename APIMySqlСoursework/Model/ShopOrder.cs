@@ -11,8 +11,9 @@ namespace APIMySqlСoursework.Model
         public int id_Order { get; set; }
         public int OrderStatus_id { get; set; }
         public int User_id { get; set; }
-
+        public DateTime DateOrder { get; set; }
         internal DBConnection Db { get; set; }
+
         [JsonConstructor]
         public ShopOrder()
         {
@@ -26,7 +27,7 @@ namespace APIMySqlСoursework.Model
         public async Task InsertAsync()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"INSERT INTO `ShopOrders` (`OrderStatus_id`, `User_id`) VALUES (3, @User_id);";
+            cmd.CommandText = @"INSERT INTO ShopOrders (OrderStatus_id, User_id, DateOrder) VALUES (3, @User_id, @DateOrder)";
             BindParams(cmd);
             await cmd.ExecuteNonQueryAsync();
             id_Order = (int)cmd.LastInsertedId;
@@ -44,7 +45,7 @@ namespace APIMySqlСoursework.Model
         public async Task UpdateAsync()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"UPDATE `ShopOrders` SET `OrderStatus_id` = @OrderStatus_id WHERE `id_Order` = @id_Order;";
+            cmd.CommandText = @"UPDATE `ShopOrders` SET `OrderStatus_id` = @OrderStatus_id, 'DateOrder' = @DateOrder WHERE `id_Order` = @id_Order;";
             BindParams(cmd);
             BindId(cmd);
             await cmd.ExecuteNonQueryAsync();
@@ -74,6 +75,12 @@ namespace APIMySqlСoursework.Model
                 DbType = DbType.Int32,
                 Value = User_id,
             });
+            cmd.Parameters.Add(new MySqlParameter
+            {
+                ParameterName = "@DateOrder",
+                DbType = DbType.DateTime,
+                Value = DateTime.Now,
+            });
         }
     }
 
@@ -83,7 +90,11 @@ namespace APIMySqlСoursework.Model
         public int OrderStatus_id { get; set; }
         public int User_id { get; set; }
         public string OrderStatus_Name { get; set; }
-        public string User_Name { get; set; }   
+        public DateTime OrderDate { get; set; }
+        public double TotalSum { get; set; }
+        public List<ShopBasketFullInfo> ShopBaskets { get; set; }
+
+
 
         internal DBConnection Db { get; set; }
         [JsonConstructor]

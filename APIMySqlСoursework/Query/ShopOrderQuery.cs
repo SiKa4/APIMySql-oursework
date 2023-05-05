@@ -1,4 +1,5 @@
-﻿using APIMySqlСoursework.DBMySql;
+﻿using APIMySqlСoursework.Controllers;
+using APIMySqlСoursework.DBMySql;
 using APIMySqlСoursework.Model;
 using System.Data.Common;
 
@@ -13,50 +14,52 @@ namespace APIMySqlСoursework.Query
             Db = db;
         }
 
-        /*public async Task<ShopOrder> FindOneAsync(int id)
+        public async Task<List<ShopOrderFullInfo>> FindAllFullInfoAsync(int idUser)
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = $"SELECT * FROM ShopOrders WHERE User_id = {id}";
+            cmd.CommandText = $"SELECT sb.id_Order,sb.OrderStatus_id, sb.User_id, os.Name, sb.DateOrder FROM ShopOrders sb JOIN OrderStatus os ON sb.OrderStatus_id = os.id_OrderStatus WHERE User_id = {idUser}";
+            await Db.Connection2.OpenAsync();
             var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
-            return result.Count > 0 ? result[0] : null;
-        }*/
-
-        public async Task<List<ShopOrder>> FindAllAsync(int id)
-        {
-            using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = $"SELECT * FROM ShopOrders WHERE User_id = {id}";
-            var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
+            await Db.Connection2.CloseAsync();
             return result.Count > 0 ? result : null;
         }
-/*
-        public async Task<List<ShopOrderFullInfo>> FindOneFullInfoAsync(int id_Order)
+
+        public async Task<ShopOrderFullInfo> FindAllIdsAsync(List<ClassInt> idsShopBusket, int idOrder)
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = $"SELECT so.id_Order, so.OrderStatus_id, so.User_id, os.Name, us.FullName FROM ShopOrders so JOIN Users us ON so.User_id = us.id_User JOIN OrderStatus os ON so.OrderStatus_id = os.id_OrderStatus WHERE so.id_Order = {id_Order};";
-            var result = await ReadAllFullInfoAsync(await cmd.ExecuteReaderAsync());
-            return result.Count > 0 ? result[0] : null;
-        }//ИЛЬЯС НАСРАЛ В ТРУСЫ ТУТ!!!!!!!*/
-
-
-        private async Task<List<ShopOrder>> ReadAllAsync(DbDataReader reader)
-        {
-            var orders = new List<ShopOrder>();
-            using (reader)
+            var query = new ShopBasketQuery(Db);
+            var shopItem = new ShopItemQuery(Db);
+            foreach (var idShopBusket in idsShopBusket)
             {
-                while (await reader.ReadAsync())
+
+                var temp = await query.FindOneAsync(idShopBusket.idShopBasket);
+                if(temp is not null)
                 {
-                    var post = new ShopOrder(Db)
+                    temp.Order_id = idOrder;
+                    var item = await shopItem.FindOneAsync(temp.ShopItem_id);
+                    if (item.ItemCount - temp.ShopItemCount >= 0)
                     {
-                        id_Order = reader.GetInt32(0),
-                        OrderStatus_id = reader.GetInt32(1),
-                    };
-                    orders.Add(post);
+                        await shopItem.ChangeItemCountAsync(item.id_ShopItem, item.ItemCount - temp.ShopItemCount);
+                        await temp.UpdateAsync();
+                    }
                 }
             }
-            return orders;
+            var answer = await FindAllFullInfoByOrderIdAsync(idOrder);
+            answer.ShopBaskets = await query.FindAllFullInfoByOrderIdShopBusketAsync(idOrder);
+            return answer;      
         }
 
-        private async Task<List<ShopOrderFullInfo>> ReadAllFullInfoAsync(DbDataReader reader)
+        public async Task<ShopOrderFullInfo> FindAllFullInfoByOrderIdAsync(int idOrder)
+        {
+            using var cmd = Db.Connection.CreateCommand();
+            cmd.CommandText = $"SELECT sb.id_Order,sb.OrderStatus_id, sb.User_id, os.Name, sb.DateOrder FROM ShopOrders sb JOIN OrderStatus os ON sb.OrderStatus_id = os.id_OrderStatus WHERE id_Order = {idOrder}";
+            await Db.Connection2.OpenAsync();
+            var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
+            await Db.Connection2.CloseAsync();
+            return result.Count > 0 ? result[0] : null;
+        }
+
+        private async Task<List<ShopOrderFullInfo>> ReadAllAsync(DbDataReader reader)
         {
             var orders = new List<ShopOrderFullInfo>();
             using (reader)
@@ -69,12 +72,24 @@ namespace APIMySqlСoursework.Query
                         OrderStatus_id = reader.GetInt32(1),
                         User_id = reader.GetInt32(2),
                         OrderStatus_Name = reader.GetString(3),
-                        User_Name = reader.GetString(4),
+                        OrderDate = reader.GetDateTime(4),
                     };
+                    await CalculateOrderTotalSum(post);
                     orders.Add(post);
                 }
+                return orders;
             }
-            return orders;
+        }
+
+        private async Task CalculateOrderTotalSum(ShopOrderFullInfo post)
+        {
+            using (var cmd = Db.Connection2.CreateCommand())
+            {
+                cmd.CommandText = $"Select si.Price, sb.ShopItemCount From ShopBasket sb JOIN ShopItems si ON sb.ShopItem_id = si.id_ShopItem where sb.Order_id = {post.id_Order}";
+                var readerItemPrice = await cmd.ExecuteReaderAsync();
+                while (readerItemPrice.Read()) post.TotalSum += (double)(readerItemPrice.GetDouble(0) * readerItemPrice.GetInt32(1));
+                await readerItemPrice.DisposeAsync();
+            }
         }
     }
 }

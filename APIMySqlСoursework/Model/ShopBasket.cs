@@ -18,6 +18,7 @@ namespace APIMySqlСoursework.Model
         public int ShopItem_id { get; set; }
         public int User_id { get; set; }
         public int ShopItemCount{ get; set; }
+        public int Order_id { get; set; }
        
         internal DBConnection Db { get; set; }
 
@@ -34,7 +35,7 @@ namespace APIMySqlСoursework.Model
         public async Task InsertAsync()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"INSERT INTO `ShopBasket` (`ShopItem_id`, `User_id`, `ShopItemCount`) VALUES (@ShopItem_id, @User_id, @ShopItemCount);";
+            cmd.CommandText = @"INSERT INTO `ShopBasket` (`ShopItem_id`, `User_id`, `ShopItemCount`, `Order_id`) VALUES (@ShopItem_id, @User_id, @ShopItemCount, @Order_id);";
             BindParams(cmd);
             await cmd.ExecuteNonQueryAsync();
             id_ShopBasket = (int)cmd.LastInsertedId;
@@ -51,7 +52,7 @@ namespace APIMySqlСoursework.Model
         public async Task UpdateAsync()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"UPDATE ShopBasket SET ShopItem_id = @ShopItem_id, User_id = @User_id, ShopItemCount = @ShopItemCount WHERE id_ShopBasket = @id_ShopBasket;";
+            cmd.CommandText = @"UPDATE ShopBasket SET ShopItemCount = @ShopItemCount, Order_id = @Order_id WHERE id_ShopBasket = @id_ShopBasket;";
             BindParams(cmd);
             BindId(cmd);
             await cmd.ExecuteNonQueryAsync();
@@ -87,6 +88,12 @@ namespace APIMySqlСoursework.Model
                 ParameterName = "@ShopItemCount",
                 DbType = DbType.Int32,
                 Value = ShopItemCount,
+            });
+            cmd.Parameters.Add(new MySqlParameter
+            {
+                ParameterName = "@Order_id",
+                DbType = DbType.Int32,
+                Value = Order_id,
             });
         }
     }
