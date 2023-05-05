@@ -13,7 +13,7 @@ namespace APIMySqlСoursework.Query
         {
             Db = db;
         }
-
+        // При вытягивании учителей подчситывать рейтинг и выводить почту, номер, имя!
         public async Task<List<CoachRaitingFullInfo>> FindOneByCoachIdFullInfoAsync(int idCoach)
         {
             using var cmd = Db.Connection.CreateCommand();
@@ -25,7 +25,7 @@ namespace APIMySqlСoursework.Query
         public async Task<List<CoachRaitingFullInfo>> FindAllFullInfoAsync()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = $"SELECT cr.id_CoachRaiting, cr.Teacher_id, cr.User_id, cr.Raiting, cr.Review, us.FullName, u.FullName FROM CoachRaiting cr JOIN Users us ON cr.Teacher_id = us.id_User JOIN Users u ON cr.User_id = u.User_id;";
+            cmd.CommandText = $"SELECT cr.id_CoachRaiting, cr.Teacher_id, cr.User_id, cr.Raiting, cr.Review, us.FullName, u.FullName FROM CoachRaiting cr JOIN Users us ON cr.Teacher_id = us.id_User JOIN Users u ON cr.User_id = u.id_User;";
             var result = await ReadAllFullInfoAsync(await cmd.ExecuteReaderAsync());
             return result.Count > 0 ? result : null;
         }

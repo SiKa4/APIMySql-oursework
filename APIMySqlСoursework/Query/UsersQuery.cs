@@ -56,13 +56,14 @@ namespace APIMySqlСoursework.Query
                         Image_URL = reader.GetString(6),
                         Email = reader.GetString(9),
                     };
+                    /////////////////////////////////////////созздать метод подсчета 
                     users.Add(post);
                 }
             }
             return users;
         }
 
-        //созздать метод подсчета 
+        
 
         private async Task<List<Users>> ReadAllAsync(DbDataReader reader)
         {
