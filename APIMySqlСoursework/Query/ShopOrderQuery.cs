@@ -31,7 +31,6 @@ namespace APIMySqlСoursework.Query
             var shopItem = new ShopItemQuery(Db);
             foreach (var idShopBusket in idsShopBusket)
             {
-
                 var temp = await query.FindOneAsync(idShopBusket.idShopBasket);
                 if(temp is not null)
                 {
