@@ -63,7 +63,6 @@ namespace APIMySqlСoursework.Controllers
             }
             else
             {
-                
                 answer.ShopItemCount += body.ShopItemCount - answer.ShopItemCount;
                 await answer.UpdateAsync();
                 return new OkObjectResult(await query.FindAllFullInfoByIdShopBusketAsync(answer.id_ShopBasket));
