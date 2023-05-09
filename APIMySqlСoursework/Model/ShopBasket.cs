@@ -18,7 +18,7 @@ namespace APIMySqlСoursework.Model
         public int ShopItem_id { get; set; }
         public int User_id { get; set; }
         public int ShopItemCount{ get; set; }
-        public int Order_id { get; set; }
+        public int? Order_id { get; set; }
        
         internal DBConnection Db { get; set; }
 

@@ -27,12 +27,23 @@ namespace APIMySqlСoursework.Controllers
         //    return new OkObjectResult(result);
         //}
 
+        [HttpGet("userIdFullInfo/{id}")]
+        public async Task<IActionResult> GetAllUserIdFullInfo(int id)
+        {
+            await Db.Connection.OpenAsync();
+            var query = new ShopBasketQuery(Db);
+            var result = await query.FindAllFullInfoByUserIdShopBusketAsync(id);
+            if (result is null)
+                return new NotFoundResult();
+            return new OkObjectResult(result);
+        }
+
         [HttpGet("userId/{id}")]
         public async Task<IActionResult> GetAllUserId(int id)
         {
             await Db.Connection.OpenAsync();
             var query = new ShopBasketQuery(Db);
-            var result = await query.FindAllFullInfoByUserIdShopBusketAsync(id);
+            var result = await query.FindAllUserIdAsync(id);
             if (result is null)
                 return new NotFoundResult();
             return new OkObjectResult(result);
@@ -48,13 +59,14 @@ namespace APIMySqlСoursework.Controllers
             if (answer == null)
             {
                 await body.InsertAsync();
-                return new OkObjectResult(body);
+                return new OkObjectResult(await query.FindAllFullInfoByIdShopBusketAsync(body.id_ShopBasket));
             }
             else
             {
-                answer.ShopItemCount += body.ShopItemCount;
+                
+                answer.ShopItemCount += body.ShopItemCount - answer.ShopItemCount;
                 await answer.UpdateAsync();
-                return new OkObjectResult(answer);
+                return new OkObjectResult(await query.FindAllFullInfoByIdShopBusketAsync(answer.id_ShopBasket));
             }
         }
 /*
