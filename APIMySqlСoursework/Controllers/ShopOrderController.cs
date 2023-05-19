@@ -1,9 +1,11 @@
 ﻿using APIMySqlСoursework.Attributes;
 using APIMySqlСoursework.DBMySql;
 using APIMySqlСoursework.Model;
+using APIMySqlСoursework.Payments;
 using APIMySqlСoursework.Query;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json.Serialization;
+using Yandex.Checkout.V3;
 
 namespace APIMySqlСoursework.Controllers
 {
@@ -29,7 +31,7 @@ namespace APIMySqlСoursework.Controllers
         }
 
         [HttpPost("{id}")]
-        public async Task<IActionResult> Post(int id, [FromBody]List<ClassInt> idsShopBasket)
+        public async Task<IActionResult?> Post(int id, [FromBody]List<ClassInt> idsShopBasket)
         {
             await Db.Connection.OpenAsync();
             var body = new ShopOrder() { User_id = id };
@@ -37,9 +39,17 @@ namespace APIMySqlСoursework.Controllers
             await body.InsertAsync();
             var query = new ShopOrderQuery(Db);
             var answer = await query.FindAllIdsAsync(idsShopBasket, body.id_Order);
-            return new OkObjectResult(answer);
+            if(answer.TotalSum != 0)
+            {
+                YooKassaPay newPay = new YooKassaPay();
+                var payPayment = await newPay.GetPayment(answer.TotalSum);
+                answer.PaymentUri = payPayment.Confirmation.ConfirmationUrl;
+                body.PaymentId = payPayment.Id;
+                await body.UpdateAsync();
+            }
+            else { await body.DeleteAsync(); }
+            return new OkObjectResult(answer.TotalSum == 0 ? null : answer);
         }
-
     }
 
     public class ClassInt

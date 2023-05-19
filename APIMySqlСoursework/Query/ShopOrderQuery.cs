@@ -14,6 +14,16 @@ namespace APIMySqlСoursework.Query
             Db = db;
         }
 
+        //public async Task<ShopOrderFullInfo> FindOneFullInfoAsync(int idOrder)
+        //{
+        //    using var cmd = Db.Connection.CreateCommand();
+        //    cmd.CommandText = $"SELECT sb.id_Order,sb.OrderStatus_id, sb.User_id, os.Name, sb.DateOrder FROM ShopOrders sb JOIN OrderStatus os ON sb.OrderStatus_id = os.id_OrderStatus WHERE sb.id_Order = {idOrder}";
+        //    await Db.Connection2.OpenAsync();
+        //    var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
+        //    await Db.Connection2.CloseAsync();
+        //    return result.Count > 0 ? result[0] : null;
+        //}
+
         public async Task<List<ShopOrderFullInfo>> FindAllFullInfoAsync(int idUser)
         {
             using var cmd = Db.Connection.CreateCommand();

@@ -12,6 +12,7 @@ namespace APIMySqlСoursework.Model
         public int OrderStatus_id { get; set; }
         public int User_id { get; set; }
         public DateTime DateOrder { get; set; }
+        public string PaymentId { get; set; }
         internal DBConnection Db { get; set; }
 
         [JsonConstructor]
@@ -45,7 +46,7 @@ namespace APIMySqlСoursework.Model
         public async Task UpdateAsync()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"UPDATE `ShopOrders` SET `OrderStatus_id` = @OrderStatus_id, 'DateOrder' = @DateOrder WHERE `id_Order` = @id_Order;";
+            cmd.CommandText = @"UPDATE `ShopOrders` SET `OrderStatus_id` = @OrderStatus_id, `DateOrder` = @DateOrder, `PaymentId` = @PaymentId WHERE `id_Order` = @id_Order;";
             BindParams(cmd);
             BindId(cmd);
             await cmd.ExecuteNonQueryAsync();
@@ -81,6 +82,12 @@ namespace APIMySqlСoursework.Model
                 DbType = DbType.DateTime,
                 Value = DateTime.Now,
             });
+            cmd.Parameters.Add(new MySqlParameter
+            {
+                ParameterName = "@PaymentId",
+                DbType = DbType.String,
+                Value = PaymentId,
+            });
         }
     }
 
@@ -93,6 +100,7 @@ namespace APIMySqlСoursework.Model
         public DateTime OrderDate { get; set; }
         public double TotalSum { get; set; }
         public List<ShopBasketFullInfo> ShopBaskets { get; set; }
+        public string PaymentUri { get; set; }
 
 
 
