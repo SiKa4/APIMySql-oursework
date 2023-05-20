@@ -14,7 +14,7 @@ namespace APIMySqlСoursework.Controllers
         public ShopBascetController(DBConnection db)
         {
             Db = db;
-        }
+        }//Обновление кол-ва товара по id товара и id usera только количество
 
         //[HttpGet("{id}")]
         //public async Task<IActionResult> GetOneByIdShopBasket(int id)
