@@ -28,6 +28,20 @@ namespace APIMySqlСoursework.Query
             return result.Count > 0 ? result : null;
         }
 
+        public async Task<int> FindOneAsyncIdSchedule(int idSchedule)
+        {
+            await Db.Connection2.OpenAsync();
+            int count = 0;
+            using (var cmd = Db.Connection2.CreateCommand())
+            {
+                cmd.CommandText = $"SELECT COUNT(*) FROM ScheduleСlasses_Users WHERE ScheduleСlass_id = {idSchedule} AND isActive = true;";
+                var readerUserSchedule = await cmd.ExecuteReaderAsync();
+                while (readerUserSchedule.Read()) count = readerUserSchedule.GetInt32(0);
+                await readerUserSchedule.DisposeAsync();
+            };
+            return count;
+        }
+
         public async Task<ScheduleСlassesUsersFullInfo> FindAllAsyncIdUserAndIdSchedule(int idUser, int idSchedule)
         {
             using var cmd = Db.Connection.CreateCommand();

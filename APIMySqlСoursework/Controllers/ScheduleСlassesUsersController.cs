@@ -3,6 +3,7 @@ using APIMySqlСoursework.DBMySql;
 using APIMySqlСoursework.Model;
 using APIMySqlСoursework.Query;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics.Metrics;
 using System.Net;
 
 namespace APIMySqlСoursework.Controllers
@@ -35,19 +36,23 @@ namespace APIMySqlСoursework.Controllers
             body.Db = Db;
             var query = new ScheduleСlassesUsersQuery(Db);
             ScheduleСlassesUsers temp = await query.FindOneAsync(body.ScheduleСlass_id, body.User_id);
-            if (temp is null)
+            var querySchedule = new SheduleClassesAndTypesQuery(Db);
+            var tempShedule = await querySchedule.FindOneAsync(body.ScheduleСlass_id);
+            var currentPeople = await query.FindOneAsyncIdSchedule(body.ScheduleСlass_id);
+            if (temp is null && currentPeople < tempShedule.MaxOfPeople)
             {
                 await body.InsertAsync();
                 ScheduleСlassesUsersFullInfo answer = await query.FindAllAsyncIdUserAndIdSchedule(body.User_id, body.ScheduleСlass_id);
                 return new OkObjectResult(answer);
             }
-            else
+            else if(currentPeople < tempShedule.MaxOfPeople)
             {
                 temp.isActive = true;
                 await temp.UpdateAsync();
                 ScheduleСlassesUsersFullInfo answer = await query.FindAllAsyncIdUserAndIdSchedule(temp.User_id, temp.ScheduleСlass_id);
                 return new OkObjectResult(answer);
             }
+            return new OkObjectResult(null);
         }
 
         [HttpPut]

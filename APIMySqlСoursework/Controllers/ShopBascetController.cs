@@ -14,18 +14,7 @@ namespace APIMySqlСoursework.Controllers
         public ShopBascetController(DBConnection db)
         {
             Db = db;
-        }//Обновление кол-ва товара по id товара и id usera только количество
-
-        //[HttpGet("{id}")]
-        //public async Task<IActionResult> GetOneByIdShopBasket(int id)
-        //{
-        //    await Db.Connection.OpenAsync();
-        //    var query = new ShopBasketQuery(Db);
-        //    var result = await query.FindOneAsync(id);
-        //    if (result is null)
-        //        return new NotFoundResult();
-        //    return new OkObjectResult(result);
-        //}
+        }
 
         [HttpGet("userIdFullInfo/{id}")]
         public async Task<IActionResult> GetAllUserIdFullInfo(int id)
@@ -68,22 +57,43 @@ namespace APIMySqlСoursework.Controllers
                 return new OkObjectResult(await query.FindAllFullInfoByIdShopBusketAsync(answer.id_ShopBasket));
             }
         }
-/*
+
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutOne(int id, [FromBody] ShopBasket body)
+        public async Task<IActionResult> PutOneByBasketId([FromBody] ShopBasket body)
         {
             await Db.Connection.OpenAsync();
-            var query = new ShopBasketQuery(Db);
-            var result = await query.FindOneAsync(id);
-            if (result is null)
+            var basketQuery = new ShopBasketQuery(Db);
+            var basket = await basketQuery.FindOneAsync(body.id_ShopBasket);
+            var itemQuery = new ShopItemQuery(Db);
+            var item = await itemQuery.FindOneAsync(body.ShopItem_id);
+            if (item is null)
                 return new NotFoundResult();
-            result.ShopItem_id = body.ShopItem_id;
-            result.User_id = body.User_id;
-            result.ShopItemCount = body.ShopItemCount;
-            await result.UpdateAsync();
-            return new OkObjectResult(query.FindAllFullInfoByIdShopBusketAsync(result.id_ShopBasket));
+            if (body.ShopItemCount > item.ItemCount)
+                return new BadRequestResult();
+            else
+            {
+                basket.ShopItemCount = body.ShopItemCount;
+                await basket.UpdateAsync();
+            }
+            return new OkObjectResult(basket);
         }
-*/
+
+        /*
+                [HttpPut("{id}")]
+                public async Task<IActionResult> PutOne(int id, [FromBody] ShopBasket body)
+                {
+                    await Db.Connection.OpenAsync();
+                    var query = new ShopBasketQuery(Db);
+                    var result = await query.FindOneAsync(id);
+                    if (result is null)
+                        return new NotFoundResult();
+                    result.ShopItem_id = body.ShopItem_id;
+                    result.User_id = body.User_id;
+                    result.ShopItemCount = body.ShopItemCount;
+                    await result.UpdateAsync();
+                    return new OkObjectResult(query.FindAllFullInfoByIdShopBusketAsync(result.id_ShopBasket));
+                }
+        */
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOne(int id)
         {

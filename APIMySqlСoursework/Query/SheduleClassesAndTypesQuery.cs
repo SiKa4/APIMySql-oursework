@@ -103,7 +103,7 @@ namespace APIMySqlСoursework.Query
                     schedule.isDelete = false;
                     using (var cmd = Db.Connection2.CreateCommand())
                     {
-                        cmd.CommandText = $"SELECT COUNT(*) FROM ScheduleСlasses_Users WHERE ScheduleСlass_id = {schedule.id_ScheduleСlass};";
+                        cmd.CommandText = $"SELECT COUNT(*) FROM ScheduleСlasses_Users WHERE ScheduleСlass_id = {schedule.id_ScheduleСlass} AND isActive = true;";
                         var readerUserSchedule = await cmd.ExecuteReaderAsync();
                         while (readerUserSchedule.Read()) count = readerUserSchedule.GetInt32(0);
                         if (count >= schedule.MaxOfPeople || schedule.TimeStart < DateTime.Now) schedule.isActive = false;
