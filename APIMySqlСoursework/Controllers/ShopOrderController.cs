@@ -4,9 +4,6 @@ using APIMySqlСoursework.Model;
 using APIMySqlСoursework.Payments;
 using APIMySqlСoursework.Query;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Routing;
-using System.Text.Json.Serialization;
-using Yandex.Checkout.V3;
 
 namespace APIMySqlСoursework.Controllers
 {
@@ -50,12 +47,6 @@ namespace APIMySqlСoursework.Controllers
             }
             else { await body.DeleteAsync(); }
             return new OkObjectResult(answer.TotalSum == 0 ? null : answer);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult?> MessageStatus(string abs)
-        {
-            return new OkObjectResult(abs);
         }
     }
 

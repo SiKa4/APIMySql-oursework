@@ -37,6 +37,14 @@ namespace APIMySqlСoursework.Query
             return result.Count > 0 ? result : null;
         }
 
+        public async Task<ShopOrder> FindOrderByPaymentIdAsync(string idPayment)
+        {
+            using var cmd = Db.Connection.CreateCommand();
+            cmd.CommandText = $"SELECT * FROM ShopOrders WHERE `PaymentId` = '{idPayment}'";
+            var result = await ReadAsyncMinInfo(await cmd.ExecuteReaderAsync());
+            return result;
+        }
+
         public async Task<ShopOrderFullInfo> FindAllFullInfoByOrderIdAsync(int idOrder)
         {
             using var cmd = Db.Connection.CreateCommand();
@@ -69,6 +77,26 @@ namespace APIMySqlСoursework.Query
             var answer = await FindAllFullInfoByOrderIdAsync(idOrder);
             answer.ShopBaskets = await query.FindAllFullInfoByOrderIdShopBusketAsync(idOrder);
             return answer;
+        }
+
+        private async Task<ShopOrder> ReadAsyncMinInfo(DbDataReader reader)
+        {
+            using (reader)
+            {
+                while (await reader.ReadAsync())
+                {
+                    var orders = new ShopOrder(Db)
+                    {
+                        id_Order = reader.GetInt32(0),
+                        OrderStatus_id = reader.GetInt32(1),
+                        User_id = reader.GetInt32(2),
+                        DateOrder = reader.GetDateTime(3),
+                        PaymentId = reader.GetString(4),
+                    };
+                    return orders;
+                }
+                return null;
+            }
         }
 
         private async Task<List<ShopOrderFullInfo>> ReadAllAsync(DbDataReader reader, bool isFiveElement)
