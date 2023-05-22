@@ -33,6 +33,10 @@ namespace APIMySqlСoursework.Query
             cmd.CommandText = $"SELECT sb.id_Order, sb.OrderStatus_id, sb.User_id, os.Name, sb.DateOrder, sb.PaymentId FROM ShopOrders sb JOIN OrderStatus os ON sb.OrderStatus_id = os.id_OrderStatus WHERE User_id = {idUser} AND sb.PaymentId IS NOT NULL";
             await Db.Connection2.OpenAsync();
             var result = await ReadAllAsync(await cmd.ExecuteReaderAsync(), true);
+            var query = new ShopBasketQuery(Db);
+            foreach (var item in result) {
+                item.ShopBaskets = await query.FindAllFullInfoByOrderIdShopBusketAsync(item.id_Order);
+            }
             await Db.Connection2.CloseAsync();
             return result.Count > 0 ? result : null;
         }
@@ -48,7 +52,7 @@ namespace APIMySqlСoursework.Query
         public async Task<ShopOrderFullInfo> FindAllFullInfoByOrderIdAsync(int idOrder)
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = $"SELECT sb.id_Order, sb.OrderStatus_id, sb.User_id, os.Name, sb.DateOrder FROM ShopOrders sb JOIN OrderStatus os ON sb.OrderStatus_id = os.id_OrderStatus WHERE id_Order = {idOrder}";
+            cmd.CommandText = $"SELECT sb.id_Order, sb.OrderStatus_id, sb.User_id, os.Name, sb.DateOrder FROM ShopOrders sb JOIN OrderStatus os ON sb.OrderStatus_id = os.id_OrderStatus WHERE sb.id_Order = {idOrder}";
             await Db.Connection2.OpenAsync();
             var result = await ReadAllAsync(await cmd.ExecuteReaderAsync(), false);
             await Db.Connection2.CloseAsync();
@@ -77,7 +81,7 @@ namespace APIMySqlСoursework.Query
             var answer = await FindAllFullInfoByOrderIdAsync(idOrder);
             answer.ShopBaskets = await query.FindAllFullInfoByOrderIdShopBusketAsync(idOrder);
             return answer;
-        }
+        } 
 
         private async Task<ShopOrder> ReadAsyncMinInfo(DbDataReader reader)
         {
@@ -121,6 +125,7 @@ namespace APIMySqlСoursework.Query
                 return orders;
             }
         }
+
         private async Task CalculateOrderTotalSum(ShopOrderFullInfo post)
         {
             using (var cmd = Db.Connection2.CreateCommand())

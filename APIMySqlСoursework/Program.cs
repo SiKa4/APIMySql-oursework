@@ -19,6 +19,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }*/
 app.MapHub<SignalRHubShedules>("/signalRHubShedules");
+app.MapHub<SignalRHubOrderStatus>("/signalRHubOrderStatus");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 

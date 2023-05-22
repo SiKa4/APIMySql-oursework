@@ -102,8 +102,6 @@ namespace APIMySqlСoursework.Model
         public List<ShopBasketFullInfo> ShopBaskets { get; set; }
         public string PaymentUri { get; set; }
 
-
-
         internal DBConnection Db { get; set; }
         [JsonConstructor]
         public ShopOrderFullInfo()

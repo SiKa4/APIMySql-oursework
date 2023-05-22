@@ -1,18 +1,21 @@
 ﻿using APIMySqlСoursework.DBMySql;
+using APIMySqlСoursework.Hubs;
 using APIMySqlСoursework.Query;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
+using Microsoft.AspNetCore.SignalR;
 
 namespace APIMySqlСoursework.Controllers
 {
     [Route("api/pullMessages")]
     public class PullMessageStatusOrderController
     {
-
+        private readonly IHubContext<SignalRHubOrderStatus> _hubContext;
         public DBConnection Db { get; }
-        public PullMessageStatusOrderController(DBConnection db)
+        public PullMessageStatusOrderController(DBConnection db, IHubContext<SignalRHubOrderStatus> hubContext)
         {
             Db = db;
+            _hubContext = hubContext;
         }
 
         [HttpPost]
@@ -43,8 +46,10 @@ namespace APIMySqlСoursework.Controllers
                         await order.UpdateAsync();
                         break;
                 }
+                var orderFullInfo = await query.FindAllFullInfoByOrderIdAsync(order.id_Order);
+                await _hubContext.Clients.All.SendAsync("GetStatus", orderFullInfo);
             }
-            
+           
         }
     }
 }
