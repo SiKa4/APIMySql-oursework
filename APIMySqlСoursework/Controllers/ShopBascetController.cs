@@ -58,14 +58,14 @@ namespace APIMySqlСoursework.Controllers
             }
         }
 
-        [HttpPut("{id}")]
+        [HttpPut]
         public async Task<IActionResult> PutOneByBasketId([FromBody] ShopBasket body)
         {
             await Db.Connection.OpenAsync();
             var basketQuery = new ShopBasketQuery(Db);
             var basket = await basketQuery.FindOneAsync(body.id_ShopBasket);
             var itemQuery = new ShopItemQuery(Db);
-            var item = await itemQuery.FindOneAsync(body.ShopItem_id);
+            var item = await itemQuery.FindOneAsync(basket.ShopItem_id);
             if (item is null)
                 return new NotFoundResult();
             if (body.ShopItemCount > item.ItemCount)

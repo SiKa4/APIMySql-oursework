@@ -4,6 +4,7 @@ using APIMySqlСoursework.Model;
 using APIMySqlСoursework.Payments;
 using APIMySqlСoursework.Query;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using System.Text.Json.Serialization;
 using Yandex.Checkout.V3;
 
@@ -42,13 +43,19 @@ namespace APIMySqlСoursework.Controllers
             if(answer.TotalSum != 0)
             {
                 YooKassaPay newPay = new YooKassaPay();
-                var payPayment = await newPay.GetPayment(answer.TotalSum);
+                var payPayment = await newPay.CreatePayment(answer.TotalSum);
                 answer.PaymentUri = payPayment.Confirmation.ConfirmationUrl;
                 body.PaymentId = payPayment.Id;
                 await body.UpdateAsync();
             }
             else { await body.DeleteAsync(); }
             return new OkObjectResult(answer.TotalSum == 0 ? null : answer);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult?> MessageStatus(string abs)
+        {
+            return new OkObjectResult(abs);
         }
     }
 

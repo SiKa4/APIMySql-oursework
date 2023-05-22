@@ -15,7 +15,7 @@ namespace APIMySqlСoursework.Payments
                 secretKey: "test_zAgW7pQsQ-69v6uY3EhOd8FmGwvqg6BZUbmcomGMjSE");
         }
 
-        public async Task<Payment> GetPayment(double sum)
+        public async Task<Payment> CreatePayment(double sum)
         {
             var newPayment = new NewPayment
             {
@@ -29,5 +29,13 @@ namespace APIMySqlСoursework.Payments
             Payment payment = Client.CreatePayment(newPayment);
             return payment;
         }// Client.GetPayment(id); обновить в бд 
+
+        public async void GetPayStatus(string idPayment)
+        {
+            switch(Client.GetPayment(idPayment).Status)
+            {
+                //case ""
+            }
+        }
     }
 }

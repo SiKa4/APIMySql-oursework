@@ -1,7 +1,10 @@
 ﻿using APIMySqlСoursework.Controllers;
 using APIMySqlСoursework.DBMySql;
 using APIMySqlСoursework.Model;
+using APIMySqlСoursework.Payments;
+using Microsoft.Extensions.Hosting;
 using System.Data.Common;
+using Yandex.Checkout.V3;
 
 namespace APIMySqlСoursework.Query
 {
@@ -27,11 +30,21 @@ namespace APIMySqlСoursework.Query
         public async Task<List<ShopOrderFullInfo>> FindAllFullInfoAsync(int idUser)
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = $"SELECT sb.id_Order,sb.OrderStatus_id, sb.User_id, os.Name, sb.DateOrder FROM ShopOrders sb JOIN OrderStatus os ON sb.OrderStatus_id = os.id_OrderStatus WHERE User_id = {idUser}";
+            cmd.CommandText = $"SELECT sb.id_Order, sb.OrderStatus_id, sb.User_id, os.Name, sb.DateOrder, sb.PaymentId FROM ShopOrders sb JOIN OrderStatus os ON sb.OrderStatus_id = os.id_OrderStatus WHERE User_id = {idUser} AND sb.PaymentId IS NOT NULL";
             await Db.Connection2.OpenAsync();
-            var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
+            var result = await ReadAllAsync(await cmd.ExecuteReaderAsync(), true);
             await Db.Connection2.CloseAsync();
             return result.Count > 0 ? result : null;
+        }
+
+        public async Task<ShopOrderFullInfo> FindAllFullInfoByOrderIdAsync(int idOrder)
+        {
+            using var cmd = Db.Connection.CreateCommand();
+            cmd.CommandText = $"SELECT sb.id_Order, sb.OrderStatus_id, sb.User_id, os.Name, sb.DateOrder FROM ShopOrders sb JOIN OrderStatus os ON sb.OrderStatus_id = os.id_OrderStatus WHERE id_Order = {idOrder}";
+            await Db.Connection2.OpenAsync();
+            var result = await ReadAllAsync(await cmd.ExecuteReaderAsync(), false);
+            await Db.Connection2.CloseAsync();
+            return result.Count > 0 ? result[0] : null;
         }
 
         public async Task<ShopOrderFullInfo> FindAllIdsAsync(List<ClassInt> idsShopBusket, int idOrder)
@@ -42,7 +55,7 @@ namespace APIMySqlСoursework.Query
             foreach (var idShopBusket in idsShopBusket)
             {
                 var temp = await query.FindOneAsync(idShopBusket.idShopBasket);
-                if(temp is not null)
+                if (temp is not null)
                 {
                     temp.Order_id = idOrder;
                     var item = await shopItem.FindOneAsync(temp.ShopItem_id);
@@ -55,20 +68,10 @@ namespace APIMySqlСoursework.Query
             }
             var answer = await FindAllFullInfoByOrderIdAsync(idOrder);
             answer.ShopBaskets = await query.FindAllFullInfoByOrderIdShopBusketAsync(idOrder);
-            return answer;      
+            return answer;
         }
 
-        public async Task<ShopOrderFullInfo> FindAllFullInfoByOrderIdAsync(int idOrder)
-        {
-            using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = $"SELECT sb.id_Order,sb.OrderStatus_id, sb.User_id, os.Name, sb.DateOrder FROM ShopOrders sb JOIN OrderStatus os ON sb.OrderStatus_id = os.id_OrderStatus WHERE id_Order = {idOrder}";
-            await Db.Connection2.OpenAsync();
-            var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
-            await Db.Connection2.CloseAsync();
-            return result.Count > 0 ? result[0] : null;
-        }
-
-        private async Task<List<ShopOrderFullInfo>> ReadAllAsync(DbDataReader reader)
+        private async Task<List<ShopOrderFullInfo>> ReadAllAsync(DbDataReader reader, bool isFiveElement)
         {
             var orders = new List<ShopOrderFullInfo>();
             using (reader)
@@ -81,15 +84,15 @@ namespace APIMySqlСoursework.Query
                         OrderStatus_id = reader.GetInt32(1),
                         User_id = reader.GetInt32(2),
                         OrderStatus_Name = reader.GetString(3),
-                        OrderDate = reader.GetDateTime(4),
+                        OrderDate = reader.GetDateTime(4) 
                     };
+                    if (isFiveElement) post.PaymentUri = $"https://yoomoney.ru/checkout/payments/v2/contract?orderId={reader.GetString(5)}";
                     await CalculateOrderTotalSum(post);
                     orders.Add(post);
                 }
                 return orders;
             }
         }
-
         private async Task CalculateOrderTotalSum(ShopOrderFullInfo post)
         {
             using (var cmd = Db.Connection2.CreateCommand())
