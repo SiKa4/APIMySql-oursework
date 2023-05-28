@@ -11,7 +11,7 @@ namespace APIMySqlСoursework.Controllers
 {
     [ApiKey]
     [Route("api/scheduleСlassesUsers")]
-    public class ScheduleСlassesUsersController : ControllerBase
+    public class ScheduleСlassesUsersController : HomeController
     {
         public DBConnection Db { get; }
         public ScheduleСlassesUsersController(DBConnection db)
@@ -27,7 +27,7 @@ namespace APIMySqlСoursework.Controllers
             var result = await query.FindAllAsync(id);
             if (result is null)
                 return new NotFoundResult();
-            var a = HttpContext.Session.GetString("login");
+            var a = CrossControllerSession.Session.GetString("login");
             return new OkObjectResult(result);
         }
 

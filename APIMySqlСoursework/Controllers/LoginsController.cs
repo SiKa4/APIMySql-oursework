@@ -12,7 +12,7 @@ namespace APIMySqlСoursework.Controllers
 {
     [ApiKey]
     [Route("api/logins")]
-    public class LoginsController : ControllerBase
+    public class LoginsController : HomeController
     {
         public DBConnection Db { get; }
         public LoginsController(DBConnection db)
@@ -28,7 +28,8 @@ namespace APIMySqlСoursework.Controllers
             var result = await query.FindOneAsyncLoginPassword(logPass.Login, logPass.Password);
             if (result is null)
                 return new NotFoundResult();
-            HttpContext.Session.SetString("login", $"{result.Login}");
+            CrossControllerSession.Session.SetString("login", $"{result.Login}");
+            //HttpContext.Session.SetString("login", $"{result.Login}");
             return new OkObjectResult(result);
         }
 
