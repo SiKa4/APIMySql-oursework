@@ -5,6 +5,7 @@ using APIMySqlСoursework.Query;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics.Metrics;
 using System.Net;
+using System.Security.Claims;
 
 namespace APIMySqlСoursework.Controllers
 {
@@ -26,6 +27,7 @@ namespace APIMySqlСoursework.Controllers
             var result = await query.FindAllAsync(id);
             if (result is null)
                 return new NotFoundResult();
+            var a = HttpContext.Session.GetString("login");
             return new OkObjectResult(result);
         }
 

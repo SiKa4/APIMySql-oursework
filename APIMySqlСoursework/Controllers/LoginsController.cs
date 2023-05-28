@@ -2,7 +2,11 @@
 using APIMySqlСoursework.DBMySql;
 using APIMySqlСoursework.Model;
 using APIMySqlСoursework.Query;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using System.Security.Claims;
 
 namespace APIMySqlСoursework.Controllers
 {
@@ -24,6 +28,7 @@ namespace APIMySqlСoursework.Controllers
             var result = await query.FindOneAsyncLoginPassword(logPass.Login, logPass.Password);
             if (result is null)
                 return new NotFoundResult();
+            HttpContext.Session.SetString("login", $"{result.Login}");
             return new OkObjectResult(result);
         }
 

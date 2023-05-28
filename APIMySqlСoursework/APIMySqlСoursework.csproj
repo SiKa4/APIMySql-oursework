@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNet.SignalR" Version="2.4.3" />
     <PackageReference Include="Microsoft.AspNet.SignalR.Client" Version="2.4.3" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.WebHost" Version="5.2.9" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.0-preview.3.23177.8" />
