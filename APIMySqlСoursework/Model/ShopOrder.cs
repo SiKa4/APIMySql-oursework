@@ -9,9 +9,7 @@ namespace APIMySqlСoursework.Model
     public class ShopOrder
     {
         public int id_Order { get; set; }
-        public int OrderStatus_id { get; set; }
         public int User_id { get; set; }
-        public DateTime DateOrder { get; set; }
         public string PaymentId { get; set; }
         internal DBConnection Db { get; set; }
 
@@ -28,11 +26,10 @@ namespace APIMySqlСoursework.Model
         public async Task InsertAsync()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"INSERT INTO ShopOrders (OrderStatus_id, User_id, DateOrder) VALUES (3, @User_id, @DateOrder)";
+            cmd.CommandText = @"INSERT INTO ShopOrders (User_id) VALUES (@User_id)";
             BindParams(cmd);
             await cmd.ExecuteNonQueryAsync();
             id_Order = (int)cmd.LastInsertedId;
-            OrderStatus_id = 3;
         }
 
         public async Task DeleteAsync()
@@ -46,7 +43,7 @@ namespace APIMySqlСoursework.Model
         public async Task UpdateAsync()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"UPDATE `ShopOrders` SET `OrderStatus_id` = @OrderStatus_id, `DateOrder` = @DateOrder, `PaymentId` = @PaymentId WHERE `id_Order` = @id_Order;";
+            cmd.CommandText = @"UPDATE `ShopOrders` SET `PaymentId` = @PaymentId WHERE `id_Order` = @id_Order;";
             BindParams(cmd);
             BindId(cmd);
             await cmd.ExecuteNonQueryAsync();
@@ -64,23 +61,12 @@ namespace APIMySqlСoursework.Model
 
         private void BindParams(MySqlCommand cmd)
         {
-            cmd.Parameters.Add(new MySqlParameter
-            {
-                ParameterName = "@OrderStatus_id",
-                DbType = DbType.Int32,
-                Value = OrderStatus_id,
-            });
+            
             cmd.Parameters.Add(new MySqlParameter
             {
                 ParameterName = "@User_id",
                 DbType = DbType.Int32,
                 Value = User_id,
-            });
-            cmd.Parameters.Add(new MySqlParameter
-            {
-                ParameterName = "@DateOrder",
-                DbType = DbType.DateTime,
-                Value = DateTime.Now,
             });
             cmd.Parameters.Add(new MySqlParameter
             {
@@ -100,6 +86,7 @@ namespace APIMySqlСoursework.Model
         public DateTime OrderDate { get; set; }
         public double TotalSum { get; set; }
         public List<ShopBasketFullInfo> ShopBaskets { get; set; }
+        public List<StatusAndDate> StatusAndDates { get; set; }
         public string PaymentUri { get; set; }
 
         internal DBConnection Db { get; set; }

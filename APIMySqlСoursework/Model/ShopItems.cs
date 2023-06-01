@@ -8,7 +8,6 @@ namespace APIMySqlСoursework.Model
 {
     public class ShopItems
     {
-
         public int id_ShopItem { get; set; }
         public string ShopItemName { get; set; }
         public string Description { get; set; }

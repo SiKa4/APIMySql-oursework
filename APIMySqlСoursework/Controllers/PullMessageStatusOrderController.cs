@@ -4,6 +4,8 @@ using APIMySqlСoursework.Query;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using Microsoft.AspNetCore.SignalR;
+using APIMySqlСoursework.Model;
+using System.Net;
 
 namespace APIMySqlСoursework.Controllers
 {
@@ -27,6 +29,7 @@ namespace APIMySqlСoursework.Controllers
             JsonElement statusElement = document.RootElement.GetProperty("object").GetProperty("status");
             string statusValue = statusElement.GetString();
             await Db.Connection.OpenAsync();
+            var statusDate = new OrderStatusDate();
             var query = new ShopOrderQuery(Db);
             var order = await query.FindOrderByPaymentIdAsync(idValue);
             if(order != null)
@@ -34,22 +37,26 @@ namespace APIMySqlСoursework.Controllers
                 switch (statusValue)
                 {
                     case "succeeded":
-                        order.OrderStatus_id = 1;
-                        await order.UpdateAsync();
+                        statusDate.OrderStatus_id = 1;
                         break;
                     case "canceled":
-                        order.OrderStatus_id = 4;
-                        await order.UpdateAsync();
+                        statusDate.OrderStatus_id = 4;
                         break;
                     case "waiting_for_capture":
-                        order.OrderStatus_id = 2;
-                        await order.UpdateAsync();
+                        statusDate.OrderStatus_id = 2;
                         break;
                 }
+                statusDate.DateOrder = DateTime.Now;
+                statusDate.ShopOrder_id = order.id_Order;
+                await statusDate.InsertAsync();
                 var orderFullInfo = await query.FindAllFullInfoByOrderIdAsync(order.id_Order);
-                await _hubContext.Clients.All.SendAsync("GetStatus", orderFullInfo);
+                var userSession = new SessionQuery(Db);
+                var session = await userSession.FindOneAsync(order.User_id);
+                if(session.UserIP == IPAddress.Loopback.ToString())
+                {
+                    await _hubContext.Clients.All.SendAsync("GetStatus", orderFullInfo);
+                }
             }
-           
         }
     }
 }

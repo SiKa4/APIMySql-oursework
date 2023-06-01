@@ -28,14 +28,6 @@ namespace APIMySqlСoursework.Payments
             };
             Payment payment = Client.CreatePayment(newPayment);
             return payment;
-        }// Client.GetPayment(id); обновить в бд 
-
-        public async void GetPayStatus(string idPayment)
-        {
-            switch(Client.GetPayment(idPayment).Status)
-            {
-                //case ""
-            }
         }
     }
 }
