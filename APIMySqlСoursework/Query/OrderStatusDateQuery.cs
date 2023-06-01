@@ -16,10 +16,8 @@ namespace APIMySqlСoursework.Query
         public async Task<List<StatusAndDate>> FindAllAsync(int idShopOrder)
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = $"SELECT * FROM orderstatusdate osd join orderstatus os on osd.OrderStatus_id = os.id_OrderStatus where osd.ShopOrder_id = {idShopOrder}";
-            await Db.Connection2.OpenAsync();
+            cmd.CommandText = $"SELECT os.Name, osd.DateOrder FROM orderstatusdate osd join orderstatus os on osd.OrderStatus_id = os.id_OrderStatus where osd.ShopOrder_id = {idShopOrder}";
             var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
-            await Db.Connection2.CloseAsync();
             return result.Count > 0 ? result : null;
         }
 
@@ -32,7 +30,7 @@ namespace APIMySqlСoursework.Query
                 {
                     var data = new StatusAndDate()
                     {
-                        Status = reader.GetInt32(0),
+                        Status = reader.GetString(0),
                         DateOrder = reader.GetDateTime(1)
                     };
                     statusAndDates.Add(data);
