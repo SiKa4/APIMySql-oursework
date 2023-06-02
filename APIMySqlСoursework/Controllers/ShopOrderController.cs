@@ -35,15 +35,21 @@ namespace APIMySqlСoursework.Controllers
             var body = new ShopOrder() { User_id = id };
             body.Db = Db;
             await body.InsertAsync();
+            var statusDate = new OrderStatusDate(Db);
+            statusDate.DateOrder = DateTime.Now;
+            statusDate.ShopOrder_id = body.id_Order;
+            statusDate.OrderStatus_id = 3;
+            await statusDate.InsertAsync();
             var query = new ShopOrderQuery(Db);
             var answer = await query.FindAllIdsAsync(idsShopBasket, body.id_Order);
-            if(answer.TotalSum != 0)
+            if (answer.TotalSum != 0)
             {
                 YooKassaPay newPay = new YooKassaPay();
                 var payPayment = await newPay.CreatePayment(answer.TotalSum);
                 answer.PaymentUri = payPayment.Confirmation.ConfirmationUrl;
                 body.PaymentId = payPayment.Id;
                 await body.UpdateAsync();
+
             }
             else { await body.DeleteAsync(); }
             return new OkObjectResult(answer.TotalSum == 0 ? null : answer);

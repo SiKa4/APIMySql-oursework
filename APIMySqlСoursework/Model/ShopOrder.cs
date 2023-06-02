@@ -80,10 +80,7 @@ namespace APIMySqlСoursework.Model
     public class ShopOrderFullInfo
     {
         public int id_Order { get; set; }
-        public int OrderStatus_id { get; set; }
         public int User_id { get; set; }
-        public string OrderStatus_Name { get; set; }
-        public DateTime OrderDate { get; set; }
         public double TotalSum { get; set; }
         public List<ShopBasketFullInfo> ShopBaskets { get; set; }
         public List<StatusAndDate> StatusAndDates { get; set; }

@@ -85,6 +85,7 @@ namespace APIMySqlСoursework.Model
     }
     public class StatusAndDate
     {
+        public int OrderStatus_id { get; set; }
         public string Status { get; set; }
         public DateTime DateOrder { get; set; }
 

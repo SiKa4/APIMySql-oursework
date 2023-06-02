@@ -29,7 +29,7 @@ namespace APIMySqlСoursework.Controllers
             JsonElement statusElement = document.RootElement.GetProperty("object").GetProperty("status");
             string statusValue = statusElement.GetString();
             await Db.Connection.OpenAsync();
-            var statusDate = new OrderStatusDate();
+            var statusDate = new OrderStatusDate(Db);
             var query = new ShopOrderQuery(Db);
             var order = await query.FindOrderByPaymentIdAsync(idValue);
             if(order != null)
@@ -50,12 +50,13 @@ namespace APIMySqlСoursework.Controllers
                 statusDate.ShopOrder_id = order.id_Order;
                 await statusDate.InsertAsync();
                 var orderFullInfo = await query.FindAllFullInfoByOrderIdAsync(order.id_Order);
+                var orderStatusQuery = new OrderStatusDateQuery(Db);
+                orderFullInfo.StatusAndDates = await orderStatusQuery.FindAllAsync(order.id_Order);
                 var userSession = new SessionQuery(Db);
                 var session = await userSession.FindOneAsync(order.User_id);
-                if(session.UserIP == IPAddress.Loopback.ToString())
-                {
+                //
                     await _hubContext.Clients.All.SendAsync("GetStatus", orderFullInfo);
-                }
+                //}
             }
         }
     }

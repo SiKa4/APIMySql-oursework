@@ -20,7 +20,7 @@ namespace APIMySqlСoursework.Query
         public async Task<List<ShopOrderFullInfo>> FindAllFullInfoAsync(int idUser)
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = $"SELECT so.id_Order, osd.OrderStatus_id, so.User_id, os.Name, osd.DateOrder, so.PaymentId From shoporders so Join orderstatusdate osd on so.id_Order = osd.ShopOrder_id join orderstatus os on osd.OrderStatus_id = os.id_OrderStatus where User_id = {idUser} AND so.PaymentId IS NOT NULL";
+            cmd.CommandText = $"SELECT so.id_Order, so.User_id, so.PaymentId From shoporders so WHERE so.PaymentId IS NOT NULL AND so.User_id = {idUser}";
             await Db.Connection2.OpenAsync();
             var result = await ReadAllAsync(await cmd.ExecuteReaderAsync(), true);
             var basketQuery = new ShopBasketQuery(Db);
@@ -45,7 +45,7 @@ namespace APIMySqlСoursework.Query
         public async Task<ShopOrderFullInfo> FindAllFullInfoByOrderIdAsync(int idOrder)
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = $"SELECT so.id_Order, osd.OrderStatus_id, so.User_id, os.Name, osd.DateOrder From shoporders so Join orderstatusdate osd on so.id_Order = osd.ShopOrder_id join orderstatus os on osd.OrderStatus_id = os.id_OrderStatus where so.id_Order = {idOrder}";
+            cmd.CommandText = $"SELECT so.id_Order, so.User_id From ShopOrders so Join OrderStatusDate osd on so.id_Order = osd.ShopOrder_id join OrderStatus os on osd.OrderStatus_id = os.id_OrderStatus where so.id_Order = {idOrder}";
             await Db.Connection2.OpenAsync();
             var result = await ReadAllAsync(await cmd.ExecuteReaderAsync(), false);
             await Db.Connection2.CloseAsync();
@@ -72,7 +72,8 @@ namespace APIMySqlСoursework.Query
                 }
             }
             var answer = await FindAllFullInfoByOrderIdAsync(idOrder);
-            answer.ShopBaskets = await query.FindAllFullInfoByOrderIdShopBusketAsync(idOrder);
+            if(answer != null)
+                answer.ShopBaskets = await query.FindAllFullInfoByOrderIdShopBusketAsync(idOrder);
             return answer;
         } 
 
@@ -104,12 +105,9 @@ namespace APIMySqlСoursework.Query
                     var post = new ShopOrderFullInfo(Db)
                     {
                         id_Order = reader.GetInt32(0),
-                        OrderStatus_id = reader.GetInt32(1),
-                        User_id = reader.GetInt32(2),
-                        OrderStatus_Name = reader.GetString(3),
-                        OrderDate = reader.GetDateTime(4) 
+                        User_id = reader.GetInt32(1),
                     };
-                    if (isFiveElement) post.PaymentUri = $"https://yoomoney.ru/checkout/payments/v2/contract?orderId={reader.GetString(5)}";
+                    if (isFiveElement) post.PaymentUri = $"https://yoomoney.ru/checkout/payments/v2/contract?orderId={reader.GetString(2)}";
                     await CalculateOrderTotalSum(post);
                     orders.Add(post);
                 }
