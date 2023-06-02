@@ -38,6 +38,17 @@ namespace APIMySqlСoursework.Controllers
             return new OkObjectResult(result);
         }
 
+        [HttpGet("coach/{id}")]
+        public async Task<IActionResult> GetOneCoach(int id)
+        {
+            await Db.Connection.OpenAsync();
+            var query = new UsersQuery(Db);
+            var result = await query.FindOneCoachAsync(id);
+            if (result is null)
+                return new NotFoundResult();
+            return new OkObjectResult(result);
+        }
+
         [HttpGet("coach")]
         public async Task<IActionResult> GetAllCoach()
         {
@@ -49,12 +60,6 @@ namespace APIMySqlСoursework.Controllers
             return new OkObjectResult(result);
         }
 
-        //[HttpGet("/getTrainer")]
-        //public async Task<IActionResult> GetAllTrainer()
-        //{
-
-        //}
-        //влкючи постман
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Users body)
         {

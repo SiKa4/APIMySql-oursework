@@ -95,6 +95,7 @@ namespace APIMySqlСoursework.Model
         public string Image_URL { get; set; }
         public string Email { get; set; }
         public double Raiting { get; set; }
+        public List<CoachRaitingFullInfo> Reviews { get; set; }
 
     }
 }

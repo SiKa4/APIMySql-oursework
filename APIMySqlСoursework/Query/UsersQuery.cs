@@ -23,11 +23,32 @@ namespace APIMySqlСoursework.Query
             var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
             return result.Count > 0 ? result[0] : null;
         }
+
+        public async Task<Coach> FindOneCoachAsync(int id)
+        {
+            using var cmd = Db.Connection.CreateCommand();
+            cmd.CommandText = $"SELECT * FROM Users u JOIN CoachInfo c ON u.id_User = c.User_id JOIN Logins l ON l.User_id = u.id_User JOIN Roles r ON u.Role_id = r.id_Role WHERE Role_id = 2 AND id_User = {id};";
+            var result = await ReadAllCoachAsync(await cmd.ExecuteReaderAsync());
+            var raitingQuery = new CoachRaitingQuery(Db);
+            foreach (var item in result)
+            {
+                item.Reviews = await raitingQuery.FindOneByCoachIdFullInfoAsync(item.id_User);
+                item.Raiting = await raitingQuery.TotalCoachRaiting(item.id_User);
+            }
+            return result.Count > 0 ? result[0] : null;
+        }
+
         public async Task<List<Coach>> FindAllCoachAsync()
         {
             using var cmd = Db.Connection.CreateCommand();
             cmd.CommandText = $"SELECT * FROM Users u JOIN CoachInfo c ON u.id_User = c.User_id JOIN Logins l ON l.User_id = u.id_User JOIN Roles r ON u.Role_id = r.id_Role WHERE Role_id = 2;";
             var result = await ReadAllCoachAsync(await cmd.ExecuteReaderAsync());
+            var raitingQuery = new CoachRaitingQuery(Db);
+            foreach (var item in result)
+            {
+                item.Reviews = await raitingQuery.FindOneByCoachIdFullInfoAsync(item.id_User);
+                item.Raiting = await raitingQuery.TotalCoachRaiting(item.id_User);
+            }
             return result.Count > 0 ? result : null;
         }
 
@@ -56,7 +77,6 @@ namespace APIMySqlСoursework.Query
                         Image_URL = reader.GetString(6),
                         Email = reader.GetString(9),
                     };
-                    /////////////////////////////////////////созздать метод подсчета 
                     users.Add(post);
                 }
             }
