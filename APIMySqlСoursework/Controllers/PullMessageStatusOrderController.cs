@@ -51,7 +51,7 @@ namespace APIMySqlСoursework.Controllers
                 await statusDate.InsertAsync();
                 var orderFullInfo = await query.FindAllFullInfoByOrderIdAsync(order.id_Order);
                 var orderStatusQuery = new OrderStatusDateQuery(Db);
-                orderFullInfo.StatusAndDates = await orderStatusQuery.FindAllAsync(order.id_Order);
+                orderFullInfo.StatusAndDates = (await orderStatusQuery.FindAllAsync(order.id_Order)).OrderBy(x => x.DateOrder).ToList();
                 var userSession = new SessionQuery(Db);
                 var session = await userSession.FindOneAsync(order.User_id);
                 //
