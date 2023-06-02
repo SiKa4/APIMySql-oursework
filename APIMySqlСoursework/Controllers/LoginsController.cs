@@ -26,8 +26,7 @@ namespace APIMySqlСoursework.Controllers
             var result = await query.FindOneAsyncLoginPassword(logPass.Login, logPass.Password);
             if (result is null)
                 return new NotFoundResult();
-            CrossControllerSession.Session.SetString("login", $"{result.Login}");
-            //HttpContext.Session.SetString("login", $"{result.Login}");
+            
             return new OkObjectResult(result);
         }
 
