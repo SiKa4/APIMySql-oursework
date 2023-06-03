@@ -5,6 +5,7 @@ using APIMySqlСoursework.Query;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace APIMySqlСoursework.Controllers
 {
@@ -26,7 +27,30 @@ namespace APIMySqlСoursework.Controllers
             var result = await query.FindOneAsyncLoginPassword(logPass.Login, logPass.Password);
             if (result is null)
                 return new NotFoundResult();
-            
+            var sessionQuery = new SessionQuery(Db);
+            var userSession = await sessionQuery.FindOneAsync(result.User_id);
+            if(userSession != null)
+            {
+                if(userSession.UserIP == IPAddress.Loopback.ToString())
+                {
+                    userSession.LastAuthorization = DateTime.Now;
+                    await userSession.UpdateAsync();
+                }
+                else if(userSession.UserIP != IPAddress.Loopback.ToString())
+                {
+                    userSession.UserIP = IPAddress.Loopback.ToString();
+                    userSession.LastAuthorization = DateTime.Now;
+                    await userSession.UpdateAsync();
+                }
+            }
+            else
+            {
+                var newSession = new Sessions(Db);
+                newSession.User_id = result.User_id;
+                newSession.UserIP = IPAddress.Loopback.ToString();
+                newSession.LastAuthorization = DateTime.Now;
+                await newSession.InsertAsync();
+            }
             return new OkObjectResult(result);
         }
 
