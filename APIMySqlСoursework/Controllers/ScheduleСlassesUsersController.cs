@@ -11,7 +11,7 @@ namespace APIMySqlСoursework.Controllers
 {
     [ApiKey]
     [Route("api/scheduleСlassesUsers")]
-    public class ScheduleСlassesUsersController : HomeController
+    public class ScheduleСlassesUsersController : ControllerBase
     {
         public DBConnection Db { get; }
         public ScheduleСlassesUsersController(DBConnection db)

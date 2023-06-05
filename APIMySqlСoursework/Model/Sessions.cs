@@ -8,7 +8,7 @@ namespace APIMySqlСoursework.Model
 {
     public class Sessions
     {
-        public int id_Session { get; set; }
+        public string id_Session { get; set; }
         public int User_id { get; set; }
         public string UserIP { get; set; }
         public DateTime LastAuthorization { get; set; }
@@ -27,16 +27,15 @@ namespace APIMySqlСoursework.Model
         public async Task InsertAsync()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"INSERT INTO `sessions` (`User_id`, `UserIP`, `LastAuthorization`) VALUES (@User_id, @UserIP, @LastAuthorization);";
+            cmd.CommandText = @"INSERT INTO `Sessions` (`User_id`, `UserIP`, `LastAuthorization`) VALUES (@User_id, @UserIP, @LastAuthorization);";
             BindParams(cmd);
             await cmd.ExecuteNonQueryAsync();
-            id_Session = (int)cmd.LastInsertedId;
         }
 
         public async Task DeleteAsync()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"DELETE FROM `sessions` WHERE `User_id` = @User_id;";
+            cmd.CommandText = @"DELETE FROM `Sessions` WHERE `User_id` = @User_id;";
             BindId(cmd);
             await cmd.ExecuteNonQueryAsync();
         }
@@ -44,7 +43,7 @@ namespace APIMySqlСoursework.Model
         public async Task UpdateAsync()
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = @"UPDATE `sessions` SET `UserIP` = @UserIP, `LastAuthorization` = @LastAuthorization WHERE `User_id` = @User_id;";
+            cmd.CommandText = @"UPDATE `Sessions` SET `UserIP` = @UserIP, `LastAuthorization` = @LastAuthorization WHERE `User_id` = @User_id;";
             BindParams(cmd);
             BindId(cmd);
             await cmd.ExecuteNonQueryAsync();
@@ -55,7 +54,7 @@ namespace APIMySqlСoursework.Model
             cmd.Parameters.Add(new MySqlParameter
             {
                 ParameterName = "@id_Session",
-                DbType = DbType.Int32,
+                DbType = DbType.String,
                 Value = id_Session,
             });
         }

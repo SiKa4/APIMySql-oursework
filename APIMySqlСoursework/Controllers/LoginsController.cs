@@ -6,12 +6,13 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace APIMySqlСoursework.Controllers
 {
     [ApiKey]
     [Route("api/logins")]
-    public class LoginsController : HomeController
+    public class LoginsController : ControllerBase
     {
         public DBConnection Db { get; }
         public LoginsController(DBConnection db)
@@ -29,7 +30,8 @@ namespace APIMySqlСoursework.Controllers
                 return new NotFoundResult();
             var sessionQuery = new SessionQuery(Db);
             var userSession = await sessionQuery.FindOneAsync(result.User_id);
-            if(userSession != null)
+           // Request.HttpContext.Connection.RemoteIpAddress.ToString();
+            if (userSession != null)
             {
                 if(userSession.UserIP == IPAddress.Loopback.ToString())
                 {
