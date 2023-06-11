@@ -16,7 +16,7 @@ namespace APIMySqlСoursework.Query
         public async Task<Sessions> FindOneAsync(int idUser)
         {
             using var cmd = Db.Connection.CreateCommand();
-            cmd.CommandText = $"SELECT * FROM session WHERE User_id = {idUser}";
+            cmd.CommandText = $"SELECT * FROM Sessions WHERE User_id = {idUser}";
             var result = await ReadAllAsync(await cmd.ExecuteReaderAsync());
             return result;
         }

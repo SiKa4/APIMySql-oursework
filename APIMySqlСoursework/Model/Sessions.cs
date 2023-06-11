@@ -8,7 +8,7 @@ namespace APIMySqlСoursework.Model
 {
     public class Sessions
     {
-        public string id_Session { get; set; }
+        public int id_Session { get; set; }
         public int User_id { get; set; }
         public string UserIP { get; set; }
         public DateTime LastAuthorization { get; set; }

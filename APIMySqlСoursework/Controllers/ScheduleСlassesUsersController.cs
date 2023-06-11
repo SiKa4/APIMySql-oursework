@@ -27,7 +27,6 @@ namespace APIMySqlСoursework.Controllers
             var result = await query.FindAllAsync(id);
             if (result is null)
                 return new NotFoundResult();
-            var a = CrossControllerSession.Session.GetString("login");
             return new OkObjectResult(result);
         }
 
